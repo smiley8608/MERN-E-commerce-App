@@ -1,8 +1,9 @@
 import React, { Suspense } from 'react'
 import AppFooter from '../layouts/Footer'
-import AppHeader from '../layouts/Header/appheaderdropdown'
-import AppSidebar from '../layouts/sideNavBar'
+import AppHeader from '../layouts/AppHeader'
+import AppSidebar from '../layouts/AppSideBar'
 import { CContainer, CSpinner } from '@coreui/react'
+import { ProductList } from './protectList'
 const Store = () => {
   return (
     <div>
@@ -12,11 +13,11 @@ const Store = () => {
         <div className="body flex-grow-1 px-3">
           <CContainer lg>
             <Suspense fallback={<CSpinner color="primary" />}>
-              Store Welcomes you
+              <ProductList />
             </Suspense>
           </CContainer>
         </div>
-        <AppFooter />
+        <AppFooter /> 
       </div>
     </div>
   )

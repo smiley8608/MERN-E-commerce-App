@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   CAvatar,
   CBadge,
@@ -8,7 +8,7 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
-} from "@coreui/react";
+} from '@coreui/react'
 import {
   cilBell,
   cilCreditCard,
@@ -19,39 +19,32 @@ import {
   cilSettings,
   cilTask,
   cilUser,
-} from "@coreui/icons";
-import CIcon from "@coreui/icons-react";
+} from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 
-import avatar8 from "./../../assets/images/avatars/8.jpg";
+const CDropdownToggleCustom = CDropdownToggle as any
 
-const CDropdownToggleCustom = CDropdownToggle as any;
 
 const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
-      <CDropdownToggleCustom
-        placement="bottom-end"
-        className="py-0"
-        caret={false}
-      >
-        <CAvatar src={avatar8} size="md" />
+      <CDropdownToggleCustom placement="bottom-end" className="py-0" caret={false}>
+        <CAvatar src={"https://images.indulgexpress.com/uploads/user/imagelibrary/2022/9/9/original/Press_Photo_2_V2_revised.jpg"} size="md" />
       </CDropdownToggleCustom>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">
-          Account
-        </CDropdownHeader>
+        <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
-          Updates
+          Cart
           <CBadge color="info" className="ms-2">
-            42
+            4
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilEnvelopeOpen} className="me-2" />
-          Messages
+          Orders
           <CBadge color="success" className="ms-2">
-            42
+            33
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
@@ -68,9 +61,7 @@ const AppHeaderDropdown = () => {
             42
           </CBadge>
         </CDropdownItem>
-        <CDropdownHeader className="bg-light fw-semibold py-2">
-          Settings
-        </CDropdownHeader>
+        <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
           Profile
@@ -100,7 +91,7 @@ const AppHeaderDropdown = () => {
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
-  );
-};
+  )
+  }
 
-export default AppHeaderDropdown;
+export default AppHeaderDropdown

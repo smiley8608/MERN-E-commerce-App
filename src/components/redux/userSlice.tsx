@@ -6,6 +6,7 @@ const initialState: InitialState = {
     firstname: "sakthi",
     lastname: "bala",
     email: "sakthibala@gmail.com",
+    phonenumber:1234567678,
     password: "1234567890",
     cart: [],
     address: {
@@ -15,7 +16,7 @@ const initialState: InitialState = {
       pincode: 641004,
     },
   },
-  Auth:true
+  Auth:false
 };
 
 const reduxSlice = createSlice({
@@ -30,8 +31,14 @@ const reduxSlice = createSlice({
     },
     setUser: (state: InitialState, action: PayloadAction<UserProps>) => {
       state.User=action.payload
+      // console.log(action.payload);
+      
     },
+    setAuth : (state: InitialState, action: PayloadAction<any>) => {
+      state.Auth = action.payload
+      console.log(action.payload);
+    }
   },
 });
-export const {setInitialState,setUser} = reduxSlice.actions
+export const {setInitialState,setUser, setAuth} = reduxSlice.actions
 export default reduxSlice.reducer

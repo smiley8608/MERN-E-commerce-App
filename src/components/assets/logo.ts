@@ -1,4 +1,4 @@
-export const logo = [
+export const logo:string[] = [
   '608 134',
   `
   <title>coreui react pro</title>

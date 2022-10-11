@@ -1,4 +1,6 @@
-export const sygnet = [
+
+
+export const sygnet:string[] = [
   '160 160',
   `
   <title>coreui logo</title>

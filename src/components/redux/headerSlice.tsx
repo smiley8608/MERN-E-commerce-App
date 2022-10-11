@@ -1,5 +1,5 @@
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState={
     sidebarShow: false,
@@ -9,10 +9,10 @@ const headerSlice=createSlice({
     name:'header',
     initialState:initialState,
     reducers:{
-        sidebarToggle: (state,action:PayloadAction) => {
+        sidebarToggle: (state) => {
             state.sidebarShow = !state.sidebarShow
         },
-        sidebarUnfoldableToggle: (state,action:PayloadAction) => {
+        sidebarUnfoldableToggle: (state) => {
             state.sidebarUnfoldable = !state.sidebarUnfoldable
         },
 }})

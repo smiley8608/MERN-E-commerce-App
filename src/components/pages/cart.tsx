@@ -2,8 +2,8 @@
 
 import React, { Suspense } from 'react'
 import AppFooter from '../layouts/Footer'
-import AppHeader from '../layouts/Header/navbar'
-import AppSidebar from '../layouts/sideNavBar'
+import AppHeader from '../layouts/AppHeader'
+import AppSidebar from '../layouts/AppSideBar'
 import { CContainer, CSpinner } from '@coreui/react'
 const Cart = () => {
   return (

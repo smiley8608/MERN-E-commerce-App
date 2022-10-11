@@ -1,24 +1,22 @@
 import React from 'react'
-
+import {logoNegative} from '../assets/logo-negative'
 import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
-import { AppSidebarNav } from './appsidenavbar'
-
-import { logoNegative } from '../assets/brand/logo-negative'
-import { sygnet } from '../assets/brand/sygnet'
+import { AppSidebarNav } from './AppSideBarNav';
+import { sygnet } from '../assets/sygnet'
 
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
-import navigation from './navigator'
+import navigation from './Navigator/Navigator'
 import { useAppDispatch, useAppSelector } from '../redux/hook'
-import { sidebarToggle } from '../redux/headerSlice'
+// import { sidebarToggle } from '../Redux/Slices/CommonSlice'
 
-const CSidebarBrandCustom  = CSidebarBrand as any
+const CSidebarBrandCustom = CSidebarBrand as any
 const AppSidebar = () => {
-  const dispatch = useAppDispatch()
+  // const dispatch = useAppDispatch()
   const unfoldable = useAppSelector((state) => state.Slidbar.sidebarUnfoldable)
   const sidebarShow = useAppSelector((state) => state.Slidbar.sidebarShow)
 
@@ -28,7 +26,7 @@ const AppSidebar = () => {
       unfoldable={unfoldable}
       visible={sidebarShow}
       onVisibleChange={(visible) => {
-        dispatch({ type: 'set', sidebarShow: visible })
+        // dispatch({ type: 'set', sidebarShow: visible })
       }}
     >
       <CSidebarBrandCustom className="d-none d-md-flex" to="/">
@@ -42,7 +40,16 @@ const AppSidebar = () => {
       </CSidebarNav>
       <CSidebarToggler
         className="d-none d-lg-flex"
-        onClick={() => dispatch(sidebarToggle())}
+        onClick={() => {
+          // dispatch(sidebarToggle())
+          const elemmain = document.getElementById("shrinked-custom") as HTMLDivElement
+          if (window.innerWidth >= 768) {
+            elemmain.style.paddingLeft = "16em"
+            if (sidebarShow) {
+              elemmain.style.paddingLeft = "0em"
+            }
+          }
+        }}
       />
     </CSidebar>
   )

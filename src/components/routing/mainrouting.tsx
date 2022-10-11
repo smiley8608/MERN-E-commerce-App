@@ -25,7 +25,7 @@ const MainRoute = () => {
             <Route path='/*' element={<Error404 />} />
           </Routes>
         </Suspense>
-      </CContainer> : <Navigate to={"/signin"} />}
+      </CContainer>:<Navigate to={"/signin"} />}
     </>
   )
 }
