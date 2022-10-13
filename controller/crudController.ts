@@ -11,7 +11,7 @@ const crudSchema = Joi.object({
     lastname: Joi.string().min(5).max(30).trim().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).max(20).pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{7,30}$")).required(),
-    phonenumber: Joi.number()  
+    phonenumber: Joi.number()
 }).with('email', 'password')
 
 
@@ -21,7 +21,7 @@ export const formValidation = (req: express.Request, res: express.Response) => {
     crudSchema.validateAsync({ firstname, lastname, email, phonenumber, username, password })
         .then((succ) => {
             console.log('run');
-            
+
             crudModel.find({ email: email })
                 .then((response) => {
                     if (response.length >= 1) {
@@ -31,24 +31,24 @@ export const formValidation = (req: express.Request, res: express.Response) => {
                         bcrypt.hash(password, 10)
                             .then((pwd) => {
                                 console.log('runnns');
-                                
-                                crudModel.create({ firstname, lastname, email, phonenumber,username, password:pwd })
+
+                                crudModel.create({ firstname, lastname, email, phonenumber, username, password: pwd })
                                     .then((result) => {
                                         console.log('succ');
-                                        
+
                                         let token
                                         if (process.env.TOKEN_SECURT) {
                                             token = Jwt.sign({ id: result._id }, process.env.TOKEN_SECURT)
                                             console.log(token);
 
-                                            return res.json({ message: 'Account created successfully !', result:result, tkn: token, auth:true })
+                                            return res.json({ message: 'Account created successfully !', result: result, tkn: token, auth: true })
                                         } else {
                                             return res.json({ message: 'Something went wrong' })
                                         }
                                     })
                                     .catch((err) => {
                                         console.log(err);
-                                        
+
                                         return res.json({ message: 'Something wents wrong !', error: err })
                                     })
                             })
@@ -76,12 +76,12 @@ export const loginValidation = (req: express.Request, res: express.Response) => 
     const { email, password } = req.body
     loginschema.validateAsync({ email, password })
         .then(validate => {
-            crudModel.findOne({ email:validate.email })
+            crudModel.findOne({ email: validate.email })
                 .then(usermail => {
                     if (!usermail) {
                         return res.json({ message: 'please enter the valid Email !' })
                     } else {
-                        bcrypt.compare(password,usermail.password)
+                        bcrypt.compare(password, usermail.password)
                             .then(userpwd => {
                                 if (!userpwd) {
                                     return res.json({ message: 'please enter the valid password' })
