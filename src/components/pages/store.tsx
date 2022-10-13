@@ -3,7 +3,7 @@ import AppFooter from '../layouts/Footer'
 import AppHeader from '../layouts/AppHeader'
 import AppSidebar from '../layouts/AppSideBar'
 import { CContainer, CSpinner } from '@coreui/react'
-import { ProductList } from './protectList'
+import { ProductList } from './productLayout'
 const Store = () => {
   return (
     <div>

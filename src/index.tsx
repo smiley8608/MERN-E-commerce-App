@@ -8,6 +8,7 @@ import store from './components/redux/store';
 import 'react-app-polyfill/stable'
 import 'core-js'
 import "@coreui/coreui/dist/css/coreui.css"
+import "antd/dist/antd.min.css"
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

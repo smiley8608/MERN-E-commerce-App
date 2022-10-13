@@ -1,0 +1,48 @@
+
+import axios from "axios";
+import React, { useEffect } from "react";
+import { Card } from "../products/card";
+import { Filter } from "../products/Filter";
+import { Search } from '../products/search';
+import { Sorter } from "../products/sorter";
+
+
+import { useAppDispatch, useAppSelector } from "../redux/hook";
+import { setInitialProduct } from "../redux/productSlice";
+
+export const ProductList = () => {
+  const dispatch = useAppDispatch();
+  const Modifier= useAppSelector(state=>state.Slidbar.modifer)
+  useEffect(() => {
+    axios
+    .post(`http://localhost:4000/allProduct?rangestart=${Modifier.rangestart}&rangeend=${Modifier.rangeend}&sortby=${Modifier.sortby}&search=${Modifier.search}`,{catagories:Modifier.catagories})
+      .then((allproducts) => {
+        console.log(allproducts.data);
+        dispatch(setInitialProduct(allproducts.data.product));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },[dispatch,Modifier]);
+  const products = useAppSelector((state) => state.Product.product);
+  return (
+    <div className="tw-w-full  ">
+      <div className="tw-w-full tw-grid tw-grid-cols-2  md:tw-grid-cols-4 lg:tw-flex  tw-justify-between tw-gap-6 tw-p-3">
+        <Sorter />
+        <Search />
+        <Filter />
+      </div>
+      <div className='tw-w-full tw-gap-5 tw-grid lg:tw-grid-cols-4 md:tw-grid-cols-2 sm:tw-grid-cols-1'>
+        {(products?.length as number) > 0 ? (
+         <>
+            {products?.map((product) => {
+              return <Card key={product._id} product={product} />;
+            })}
+          </>
+        ) : (
+          <div>No products available</div>
+        )}
+      </div>
+    </div>
+  );
+};

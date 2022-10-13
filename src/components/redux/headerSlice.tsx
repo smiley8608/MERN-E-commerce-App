@@ -1,9 +1,18 @@
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice,PayloadAction } from "@reduxjs/toolkit";
+
 
 const initialState={
     sidebarShow: false,
-    sidebarUnfoldable: false
+    sidebarUnfoldable: false,
+    modifer:{
+        sortby:'relevance',
+        rangestart:10,
+        rangeend:50000,
+        catagories:[] as string[],
+        search:''
+
+    }
 }
 const headerSlice=createSlice({
     name:'header',
@@ -15,7 +24,10 @@ const headerSlice=createSlice({
         sidebarUnfoldableToggle: (state) => {
             state.sidebarUnfoldable = !state.sidebarUnfoldable
         },
+        setModifier:(state,action:PayloadAction<any>)=>{
+            state.modifer={...state.modifer,...action.payload}
+        }
 }})
 
-export const {sidebarToggle,sidebarUnfoldableToggle} =headerSlice.actions
+export const {sidebarToggle,sidebarUnfoldableToggle,setModifier} =headerSlice.actions
 export default headerSlice.reducer

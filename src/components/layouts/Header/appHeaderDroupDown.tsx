@@ -29,7 +29,7 @@ const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggleCustom placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar src={"https://images.indulgexpress.com/uploads/user/imagelibrary/2022/9/9/original/Press_Photo_2_V2_revised.jpg"} size="md" />
+        <CAvatar  ><i className="bi bi-person tw-text-2xl tw-mr-8 tw-mb-2"></i></CAvatar>  
       </CDropdownToggleCustom>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>

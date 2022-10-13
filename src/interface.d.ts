@@ -16,12 +16,15 @@ interface UserProps {
  
 }
 interface Product {
+    _id: string
     title:string,
+    description:string,
     catagories:string,
     price:number,
     rating:number,
-    image:string,
-    imageList:string[]
+    stock:number,
+    brand:string,
+   thumbnail:string
 }
 interface InitialState {
     User:UserProps|null,
