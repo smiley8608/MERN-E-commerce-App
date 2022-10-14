@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import Joi = require('joi')
 import crudModel from '../model/crudmodel'
 import Jwt from 'jsonwebtoken'
+import { updatedRequest } from '../Interface'
 dotenv.config()
 const crudSchema = Joi.object({
     username: Joi.string().min(6).max(13).required().trim(),
@@ -105,4 +106,62 @@ export const loginValidation = (req: express.Request, res: express.Response) => 
         .catch(err => {
             return res.json({ message: 'somthings went wrong', error: err })
         })
+}
+// <----------------------------------------------------------------------------------------------------------------------------------------->
+const cartMerger = (stayscart: any[], userscart: any[]):any[] => {
+    let newarr:any[] = []
+    let staycart = [...stayscart]
+    let usercart = [...userscart]
+   
+    
+    for (let i = 0; i < usercart.length; i++){
+        let filter = staycart.filter((value,index) => {
+            return String(value.product._id) === String(usercart[i].product._id)
+        })
+        
+        
+        if(filter.length > 0){
+            let findex = staycart.findIndex(value => String(value.product._id) === String(usercart[i].product._id))
+            
+            
+            if(staycart.length === 0){
+                continue
+            }
+            let newItem = {product: usercart[i].product, quantity: staycart[findex].quantity+usercart[i].quantity}
+            staycart = staycart.filter(value => String(value.product._id) !== String(staycart[findex].product._id))
+            newarr.push(newItem)
+            
+            
+        } else {
+            newarr.push(usercart[i])
+        }
+    }
+    newarr = [...newarr, ...staycart]
+    
+    
+    return newarr
+}
+
+export const cartChanger = async (req:updatedRequest, res: express.Response) => {
+
+    let staycart: any[] = req.body.cart
+    let usercart: any[] = req.user.cart
+
+
+    let newcart = cartMerger(staycart, usercart)
+
+    setTimeout(() => {
+        
+        
+        crudModel.findByIdAndUpdate(req.user._id, { cart: newcart })
+            .then(updateCartResponse => {
+                crudModel.findById(req.user._id)
+                    .then(userResponse => res.json({ cart: userResponse?.cart }))
+                    .catch(err => res.json({ message: "User Error", error: err }))
+            })
+            .catch(err => {
+                console.log(err);
+                res.json({ message: "Cannot update cart", error: err })
+            })
+    }, 2000);
 }
