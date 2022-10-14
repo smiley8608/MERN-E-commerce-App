@@ -20,7 +20,7 @@ export const Search=()=>{
    }
     return(
         <div>
-            <Input.Search className="tw-col-span-2 md:tw-col-span-4 lg:tw-w-1/2" placeholder="Search here...." onSearch={searchHandler} enterButton />
+            <Input.Search  placeholder="Search here...." size={"large"} onSearch={searchHandler} enterButton />
         </div>
     )
 

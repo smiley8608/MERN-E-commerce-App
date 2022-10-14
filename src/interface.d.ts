@@ -6,7 +6,7 @@ interface UserProps {
     email:string,
     phonenumber:number,
     password:string,
-    cart:[],
+    cart:CartItem[],
     address:{
         doorno:number,
         landmark:string,
@@ -15,6 +15,7 @@ interface UserProps {
     }
  
 }
+
 interface Product {
     _id: string
     title:string,
@@ -42,4 +43,9 @@ interface RegisterPropsType {
     email:string,
     password:string,
     phonenumber:number
+}
+
+interface CartItem {
+    product:[],
+    quantity:[]
 }

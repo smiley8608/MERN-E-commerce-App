@@ -1,9 +1,7 @@
 import React from "react";
-import { Login } from "./components/authaticationpages/login";
-import Register from "./components/authaticationpages/register";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MasterLayout from "./components/routing/MasterLayout";
-import Cart from "./components/pages/cart";
+import {Cart} from './components/pages/cart';
 import Store from "./components/pages/store";
 import OpenRoute from "./components/routing/openrouter";
 

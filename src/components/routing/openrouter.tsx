@@ -7,7 +7,7 @@ import Error404 from '../authaticationpages/error404'
 import Error500 from '../authaticationpages/error500'
 import  {ForgotPassword} from '../authaticationpages/forgotpassword'
 import Register from '../authaticationpages/register'
-import {Login} from '../authaticationpages/login'
+import {Login} from '../authaticationpages/signin'
 
 const OpenRoute = () => {
 

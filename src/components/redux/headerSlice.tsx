@@ -7,9 +7,9 @@ const initialState={
     sidebarUnfoldable: false,
     modifer:{
         sortby:'relevance',
-        rangestart:10,
+        rangestart:0,
         rangeend:50000,
-        catagories:[] as string[],
+        category:[] as string[],
         search:''
 
     }

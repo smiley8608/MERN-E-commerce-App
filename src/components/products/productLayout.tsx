@@ -1,10 +1,10 @@
 
 import axios from "axios";
 import React, { useEffect } from "react";
-import { Card } from "../products/card";
-import { Filter } from "../products/Filter";
-import { Search } from '../products/search';
-import { Sorter } from "../products/sorter";
+import { Card } from "./card";
+import { Filter } from "./Filter";
+import { Search } from './search';
+import { Sorter } from "./sorter";
 
 
 import { useAppDispatch, useAppSelector } from "../redux/hook";
@@ -15,16 +15,18 @@ export const ProductList = () => {
   const Modifier= useAppSelector(state=>state.Slidbar.modifer)
   useEffect(() => {
     axios
-    .post(`http://localhost:4000/allProduct?rangestart=${Modifier.rangestart}&rangeend=${Modifier.rangeend}&sortby=${Modifier.sortby}&search=${Modifier.search}`,{catagories:Modifier.catagories})
+    .post(`http://localhost:4000/allProduct?rangestart=${Modifier.rangestart}&rangeend=${Modifier.rangeend}&sortby=${Modifier.sortby}&search=${Modifier.search}`,{catagories:Modifier.category})
       .then((allproducts) => {
-        console.log(allproducts.data);
-        dispatch(setInitialProduct(allproducts.data.product));
+        console.log(allproducts);
+        dispatch(setInitialProduct(allproducts.data.products));
       })
       .catch((err) => {
         console.log(err);
       });
   },[dispatch,Modifier]);
-  const products = useAppSelector((state) => state.Product.product);
+  const products = useAppSelector((state) => state.Product.products);
+  console.log(products);
+  
   return (
     <div className="tw-w-full  ">
       <div className="tw-w-full tw-grid tw-grid-cols-2  md:tw-grid-cols-4 lg:tw-flex  tw-justify-between tw-gap-6 tw-p-3">

@@ -14,16 +14,18 @@ export const Filter = () => {
     setOpen(newOpen);
   };
   const changeHandler = (Checkedvalue: CheckboxValueType[]) => {
+    console.log(Checkedvalue);
+
     setValue(Checkedvalue);
-    dispatch(setModifier({ catagories: Checkedvalue }));
+    dispatch(setModifier({ category: Checkedvalue }));
   };
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
   };
   const options = [
     { label: "Electronics", value: "electronics" },
-    { label: "Laptop", value: "laptop" },
-    { label: "SmartPhone", value: "smartphone" },
+    { label: "Smartphones", value: "smartphones" },
+    { label: "Laptops", value: "laptops" },
     { label: "Fragrances", value: "fragrances" },
     { label: "Skincare", value: "skincare" },
     { label: "Groceries", value: "groceries" },
@@ -34,21 +36,21 @@ export const Filter = () => {
   const SortContent = () => {
     return (
       <form
-        className="tw-w-80 t-grid tw-grid-cols-2 tw-gap-2"
+        className="tw-w-60 tw-grid tw-grid-cols-1 tw-gap-1"
         onSubmit={submitHandler}
       >
-        <div className="tw-gap-2 tw-align-baseline">
-          <label>Catagories</label>
+        <div className=" tw-gap-1 tw-align-baseline">
+          <label>Categories</label>
+          <br />
           <Checkbox.Group
+            className="tw-grid tw-grid-cols-1"
             value={value}
             options={options}
             onChange={changeHandler}
-            className='tw-grid tw-grid-cols-1'
+            
           />
         </div>
-        <Button className={"tw-mt-3"} type="primary">
-          Apply
-        </Button>
+        
       </form>
     );
   };
@@ -59,10 +61,8 @@ export const Filter = () => {
       trigger="click"
       open={open}
       onOpenChange={openChangeHandler}
-      placement={"bottomRight"}
-      className={
-        "tw-col-start-2 tw-row-start-1 md:tw-col-start-auto md:tw-row-start-auto tw-col-span-1 md:tw-col-span-1 "
-      }
+      placement={"rightTop"}
+      
     >
       <Button type="ghost">Filters</Button>
     </Popover>

@@ -5,7 +5,10 @@ import AppFooter from '../layouts/Footer'
 import AppHeader from '../layouts/AppHeader'
 import AppSidebar from '../layouts/AppSideBar'
 import { CContainer, CSpinner } from '@coreui/react'
-const Cart = () => {
+import { CartLayouts } from '../Cart/cartLayouts'
+
+
+export const Cart = () => {
   return (
 
     <div>
@@ -15,7 +18,7 @@ const Cart = () => {
         <div className="body flex-grow-1 px-3">
           <CContainer lg>
             <Suspense fallback={<CSpinner color="primary" />}>
-              Cart Welcomes you
+              <CartLayouts />
             </Suspense>
           </CContainer>
         </div>
@@ -26,4 +29,3 @@ const Cart = () => {
   )
 }
 
-export default Cart

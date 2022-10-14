@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface productPropType {
-  product: Product[] | null;
+  products: Product[] | null;
 }
 
 const initilalState: productPropType = {
-  product: null,
+  products: null,
 };
 
 const productSlice = createSlice({
@@ -16,7 +16,7 @@ const productSlice = createSlice({
       state: productPropType,
       action: PayloadAction<Product[]>
     ) => {
-      state.product = action.payload;
+      state.products = action.payload;
     }
   },
 });

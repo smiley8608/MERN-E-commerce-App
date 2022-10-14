@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "../redux/hook";
 import { setAuth, setUser } from "../redux/userSlice";
+import { message } from "antd";
 export const Login = () => {
   const [data, setData] = useState<LoginPropsType>({ email: "", password: "" });
   const Navigate = useNavigate();
@@ -13,11 +14,19 @@ export const Login = () => {
     axios
       .post("http://localhost:4000/login", data)
       .then((res) => {
-        localStorage.setItem("Jwt-token", res.data.tkn);
-        alert(res.data.message);
-        dispatch(setUser(res.data.result));
-        dispatch(setAuth(res.data.auth))
-        Navigate("/");
+        if(res.data.auth){
+          message.info(res.data.message)
+        }else{
+          message.error(res.data.message)
+        }
+        setInterval(()=>{
+          localStorage.setItem("Jwt-token", res.data.tkn);
+          dispatch(setUser(res.data.result));
+          dispatch(setAuth(res.data.auth))
+          Navigate("/");
+          
+        },1000)
+        
       })
       .catch((err) => {
         console.log(err);

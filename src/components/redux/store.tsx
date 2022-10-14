@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import cartSlice from "./cartSlice";
 import headerSlice from './headerSlice'
 import productSlice from "./productSlice";
 
@@ -7,7 +8,8 @@ const store =configureStore({
     reducer:{
         User:reduxSlice,
         Slidbar:headerSlice,
-        Product:productSlice
+        Product:productSlice,
+        Cart:cartSlice
     }
 })
 
