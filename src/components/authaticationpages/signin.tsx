@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "../redux/hook";
-import { setAuth, setUser } from "../redux/userSlice";
+import {  setInitialState } from "../redux/userSlice";
 import { message } from "antd";
 export const Login = () => {
   const [data, setData] = useState<LoginPropsType>({ email: "", password: "" });
@@ -14,19 +14,17 @@ export const Login = () => {
     axios
       .post("http://localhost:4000/login", data)
       .then((res) => {
-        if(res.data.auth){
-          message.info(res.data.message)
-        }else{
-          message.error(res.data.message)
+        if (res.data.auth) {
+          message.info(res.data.message);
+        } else {
+          message.error(res.data.message);
         }
-        setInterval(()=>{
+        setInterval(() => {
           localStorage.setItem("Jwt-token", res.data.tkn);
-          dispatch(setUser(res.data.result));
-          dispatch(setAuth(res.data.auth))
-          Navigate("/");
+          dispatch(setInitialState({User:res.data.result,Auth:res.data.auth}));
           
-        },1000)
-        
+          Navigate("/");
+        }, 1000);
       })
       .catch((err) => {
         console.log(err);

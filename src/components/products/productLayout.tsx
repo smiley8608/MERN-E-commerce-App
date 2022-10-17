@@ -25,7 +25,7 @@ export const ProductList = () => {
       });
   },[dispatch,Modifier]);
   const products = useAppSelector((state) => state.Product.products);
-  console.log(products);
+ 
   
   return (
     <div className="tw-w-full  ">

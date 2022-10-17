@@ -46,6 +46,6 @@ interface RegisterPropsType {
 }
 
 interface CartItem {
-    product:[],
-    quantity:[]
+    product:Product,
+    quantity:number
 }

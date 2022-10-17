@@ -9,6 +9,13 @@ import 'react-app-polyfill/stable'
 import 'core-js'
 import "@coreui/coreui/dist/css/coreui.css"
 import "antd/dist/antd.min.css"
+import axios from 'axios';
+
+axios.defaults.baseURL='http://localhost:4000'
+let token = localStorage.getItem('Jwt-token')
+if(token){
+  axios.defaults.headers.common['Jwt-token']=token
+}
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
