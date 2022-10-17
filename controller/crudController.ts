@@ -108,60 +108,95 @@ export const loginValidation = (req: express.Request, res: express.Response) => 
         })
 }
 // <----------------------------------------------------------------------------------------------------------------------------------------->
-const cartMerger = (stayscart: any[], userscart: any[]):any[] => {
-    let newarr:any[] = []
-    let staycart = [...stayscart]
-    let usercart = [...userscart]
-   
+export const UserStatus = (req:updatedRequest, res: express.Response):any => {
     
-    for (let i = 0; i < usercart.length; i++){
-        let filter = staycart.filter((value,index) => {
-            return String(value.product._id) === String(usercart[i].product._id)
+    console.log(req.user);
+    
+    if (!req.user) {
+        
+        return res.status(404).json({
+            user: null,
+            auth: false,
+            message: 'You are not allowed to logged in please try again late ',
         })
-        
-        
-        if(filter.length > 0){
-            let findex = staycart.findIndex(value => String(value.product._id) === String(usercart[i].product._id))
-            
-            
-            if(staycart.length === 0){
-                continue
-            }
-            let newItem = {product: usercart[i].product, quantity: staycart[findex].quantity+usercart[i].quantity}
-            staycart = staycart.filter(value => String(value.product._id) !== String(staycart[findex].product._id))
-            newarr.push(newItem)
-            
-            
-        } else {
-            newarr.push(usercart[i])
-        }
+    }else{
+        console.log(req.user)
+        return res.status(200).json({
+            auth:true,
+            message:'Welcome Back',
+            user:req.user
+        })
     }
-    newarr = [...newarr, ...staycart]
-    
-    
-    return newarr
 }
 
-export const cartChanger = async (req:updatedRequest, res: express.Response) => {
+const mergeCart = async (localCart: any[], UserCart: any[]) => {
+    let newArr: any[] = []
+    let localCartStore: any[] = { ...localCart }
+    let userCartStore: any[] = { ...UserCart }
 
-    let staycart: any[] = req.body.cart
-    let usercart: any[] = req.user.cart
+    for (let i = 0; i < userCartStore.length; i++) {
+        let filter = localCartStore.filter((value, index) => {
+            return String(value.product._id) === String(userCartStore[i].product._id)
+        })
+        if (filter.length > 0) {
+            const FindIndex = localCartStore.findIndex((value, index) => {
+                return String(value.product._id) === String(userCartStore[i].product._id)
+            })
+            if (localCartStore.length == 0) {
+                return newArr
+            }
+            let newItems = { product: userCartStore[FindIndex].product, quantity: localCartStore[FindIndex].quantity + userCartStore[i].quantity }
+            localCartStore = localCartStore.filter((value) => {
+                value.product._id !== userCartStore[i].product._id
+                return newArr.push(newItems)
+            })
+        } else {
+            return newArr.push(userCartStore[i])
+        } let newCart = [{ ...newArr, ...localCartStore }]
+        return newCart
+    }
+}
 
 
-    let newcart = cartMerger(staycart, usercart)
+export const changeCart = (req: updatedRequest, res: express.Response) => {
+    const localCart = req.body.cart
+    const userCart = req.user.cart
 
+    const newCart = mergeCart(localCart, userCart)
     setTimeout(() => {
-        
-        
-        crudModel.findByIdAndUpdate(req.user._id, { cart: newcart })
-            .then(updateCartResponse => {
-                crudModel.findById(req.user._id)
-                    .then(userResponse => res.json({ cart: userResponse?.cart }))
-                    .catch(err => res.json({ message: "User Error", error: err }))
+
+        crudModel.findByIdAndUpdate(req.user._id, { cart: newCart })
+            .then(response => {
+                crudModel.findById(req.body._id)
+                    .then(result => {
+                        return res.json({ message: 'Add to Cart', result: result?.cart })
+                    })
+                    .catch(err => {
+                        return res.json({ message: err })
+                    })
             })
             .catch(err => {
-                console.log(err);
-                res.json({ message: "Cannot update cart", error: err })
+                return res.json({ message: err })
             })
-    }, 2000);
+    }, 3000)
+
+}
+
+export const cartDeleter=(req:updatedRequest,res:express.Response)=>{
+       const product=req.body.product
+       const cart=req.user.cart
+       let newCart=cart.filter((value:any)=>String(value.product._id) !== String(product._id))
+
+       setInterval(()=>{
+        crudModel.findByIdAndUpdate(req.user._id,{cart:newCart})
+        .then(result=>{
+            crudModel.findById(req.user._id)
+            .then(responce=>{
+                return res.json({message :'cart deleted successfully',result:responce})
+            })
+            .catch(err=>res.json({message:err.message}))       
+            
+        })
+        .catch(err=>res.json({message:err.message}))
+       })   
 }

@@ -10,5 +10,7 @@ const router:routerType=Router()
 
 router.post('/login',middleWere,crudRouter.loginValidation)
 router.post('/register',middleWere,crudRouter.formValidation)
-
+router.post('/cart',middleWere,crudRouter.changeCart)
+router.get('/authstatus',middleWere,crudRouter.UserStatus)
+router.post('/deletecart',middleWere,crudRouter.cartDeleter)
 export default router

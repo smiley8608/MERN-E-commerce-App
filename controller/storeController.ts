@@ -58,8 +58,6 @@ export const getAllProducts = (req:updatedRequest,res:express.Response) => {
         productmodel.find(search ? aggregatorWithSearch : aggregatorWithoutSearch)
             .then(response => {
                 console.log("runner");
-                
-            
                 return res.json({ products: response })
             })
             .catch(err => {
