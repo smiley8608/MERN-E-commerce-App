@@ -9,7 +9,7 @@ import productRouter from "./router/productrouter";
 const app = express()
 app.use(Cors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELEATE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }))
 

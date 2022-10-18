@@ -73,7 +73,7 @@ export const getAllProducts = (req:updatedRequest,res:express.Response) => {
             res.json({ products: response })
         })
         .catch(err => {
-            console.log("hehe");
+            
 
             res.json({ message: err })
         })

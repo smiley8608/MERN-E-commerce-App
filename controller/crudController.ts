@@ -7,12 +7,12 @@ import Jwt from 'jsonwebtoken'
 import { updatedRequest } from '../Interface'
 dotenv.config()
 const crudSchema = Joi.object({
-    username: Joi.string().min(6).max(13).required().trim(),
-    firstname: Joi.string().min(5).max(30).trim().required(),
-    lastname: Joi.string().min(5).max(30).trim().required(),
+    username: Joi.string().min(6).max(13).required(),
+    firstname: Joi.string().max(30).trim().required(),
+    lastname: Joi.string().max(30).trim().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).max(20).pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{7,30}$")).required(),
-    phonenumber: Joi.number()
+    phonenumber: Joi.number().required()
 }).with('email', 'password')
 
 
@@ -50,7 +50,7 @@ export const formValidation = (req: express.Request, res: express.Response) => {
                                     .catch((err) => {
                                         console.log(err);
 
-                                        return res.json({ message: 'Something wents wrong !', error: err })
+                                        return res.json({ message: 'Unable to create account !', error: err })
                                     })
                             })
                             .catch((err) => {
@@ -89,7 +89,7 @@ export const loginValidation = (req: express.Request, res: express.Response) => 
                                 } else {
                                     if (process.env.TOKEN_SECURT) {
 
-                                        let token = Jwt.sign({ id: validate._id }, process.env.TOKEN_SECURT)
+                                        let token = Jwt.sign({ id: usermail._id }, process.env.TOKEN_SECURT)
                                         return res.json({ message: 'Logined Successfully !', result: usermail, tkn: token, auth: true })
                                     }
                                 }
@@ -109,21 +109,23 @@ export const loginValidation = (req: express.Request, res: express.Response) => 
 }
 // <----------------------------------------------------------------------------------------------------------------------------------------->
 export const UserStatus = (req:updatedRequest, res: express.Response):any => {
+    console.log('aaaaaa');
+    
     
     console.log(req.user);
     
     if (!req.user) {
         
-        return res.status(404).json({
+        return res.status(403).json({
+            message:'You are not allowed to logged in please try again late ',
             user: null,
             auth: false,
-            message: 'You are not allowed to logged in please try again late ',
         })
     }else{
         console.log(req.user)
         return res.status(200).json({
-            auth:true,
             message:'Welcome Back',
+            auth:true,
             user:req.user
         })
     }
@@ -169,7 +171,7 @@ export const changeCart = (req: updatedRequest, res: express.Response) => {
             .then(response => {
                 crudModel.findById(req.body._id)
                     .then(result => {
-                        return res.json({ message: 'Add to Cart', result: result?.cart })
+                        return res.json({ message: 'Add to Cart', Result:result?.cart })
                     })
                     .catch(err => {
                         return res.json({ message: err })
