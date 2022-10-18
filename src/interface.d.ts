@@ -42,7 +42,8 @@ interface RegisterPropsType {
     lastname:string,
     email:string,
     password:string,
-    phonenumber:number
+    conformPassword:string,
+    phonenumber:number|string
 }
 
 interface CartItem {

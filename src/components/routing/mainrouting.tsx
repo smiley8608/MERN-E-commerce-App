@@ -13,6 +13,8 @@ import { useAppSelector } from '../redux/hook'
 
 const MainRoute = () => {
   const auth = useAppSelector(state => state.User.Auth)
+  console.log(auth+'yugsduhsdui');
+  
   return (
     <>
       {auth ? <CContainer lg>

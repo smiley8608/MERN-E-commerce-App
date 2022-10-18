@@ -27,6 +27,8 @@ const AppHeader = () => {
   const dispatch = useAppDispatch()
   const auth = useAppSelector((state) => state.User.Auth)
   const sidebarShow = useAppSelector((state) => state.Slidbar.sidebarShow)
+  console.log(auth + 'header');
+  
 
   return (
     <CHeader position="sticky" className="mb-4">
@@ -93,11 +95,6 @@ const AppHeader = () => {
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
-      {/* <CHeaderDivider /> */}
-      {/* <CContainer fluid>
-        <AppBreadcrumb /> 
-        <div>Hello</div>
-      </CContainer> */}
     </CHeader>
   )
 }

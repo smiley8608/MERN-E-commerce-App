@@ -12,9 +12,9 @@ import "antd/dist/antd.min.css"
 import axios from 'axios';
 
 axios.defaults.baseURL='http://localhost:4000'
-let token = localStorage.getItem('Jwt-token')
+let token = localStorage.getItem('jwt-token')
 if(token){
-  axios.defaults.headers.common['Jwt-token']=token
+  axios.defaults.headers.common['jwt-token']=token
 }
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -15,6 +15,8 @@ const OpenRoute = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    console.log(auth+'sgdvgd');
+    
     if (auth) {
       navigate("/")
     }

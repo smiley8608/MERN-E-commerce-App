@@ -14,16 +14,18 @@ export const Login = () => {
     axios
       .post("http://localhost:4000/login", data)
       .then((res) => {
+        console.log(res);
+        
         if (res.data.auth) {
           message.info(res.data.message);
         } else {
           message.error(res.data.message);
         }
-        setInterval(() => {
-          localStorage.setItem("Jwt-token", res.data.tkn);
+        setTimeout(() => {
+          localStorage.setItem("jwt-token", res.data.tkn);
           dispatch(setInitialState({User:res.data.result,Auth:res.data.auth}));
           
-          Navigate("/");
+      
         }, 1000);
       })
       .catch((err) => {
@@ -32,7 +34,7 @@ export const Login = () => {
   };
   return (
     <div className="tw-w-full tw-h-screen tw-bg-slate-400 tw-flex tw-justify-center tw-items-center tw-shadow-xl tw-shadow-black ">
-      <div className="tw-w-2/5 tw-bg-slate-50 tw-grid tw-grid-cols-2  tw-rounded-xl">
+      <div className="lg:tw-w-2/5 md:tw-w-3/5 tw-bg-slate-50 tw-grid sm:tw-grid-cols-1 md:tw-grid-cols-2   tw-rounded-xl">
         <div className="tw-shadow-xl tw-shadow-black tw-p-4 ">
           <h1>LOGIN </h1>
           <p>Sign In to your account </p>

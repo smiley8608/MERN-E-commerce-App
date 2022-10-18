@@ -8,55 +8,56 @@ import { useAppDispatch, useAppSelector } from "./components/redux/hook";
 import { setCartReplace, setInitialCart } from "./components/redux/cartSlice";
 import axios from "axios";
 import { setInitialState } from "./components/redux/userSlice";
-import { message } from "antd";
 
 function App() {
   // const UserCart = useAppSelector((state) => state.User.User?.cart);
   const cart = useAppSelector((state) => state.Cart.cart);
-  const AuthUser = useAppSelector((state) => state.User.Auth);
   const dispatch = useAppDispatch();
-  localStorage.setItem("entry-level",window.location.pathname)
+  const AuthUser = useAppSelector((state) => state.User.Auth);
+  localStorage.setItem("entry-level", window.location.pathname);
   useEffect(() => {
     let tempStorage = localStorage.getItem("cart");
-    console.log(tempStorage);
-    
-    if (tempStorage) {
-       dispatch(setInitialCart(JSON.parse(tempStorage)));
-    } else {
-       dispatch(setInitialCart([]))
+
+    let token = localStorage.getItem("jwt-token");
+    if (token) {
+      axios.defaults.headers.common["jwt-token"] = token;
     }
-    
+    if (tempStorage) {
+      dispatch(setInitialCart(JSON.parse(tempStorage as string) || []));
+    } else {
+      dispatch(setInitialCart([]));
+    }
+
     axios
-    .get("http://localhost:4000/authstatus")
-    .then((res) => {
-        console.log(res.data.message);
-        console.log(res.data.auth);
-        
-         dispatch(setInitialState({Auth:res.data.User.Auth,User:res.data.user}))
-         message.success(res.data.message)
-       
+      .get("/authstatus")
+      .then((res) => {
+        console.log("apple");
+        console.log(res);
+
+        dispatch(setInitialState({ Auth: res.data.auth, User: res.data.user }));
+        //  alert(res.data.message)
       })
       .catch((err) => {
         console.log(err);
-        
+
         if (err.response.status === 403) {
-          localStorage.removeItem("Jwt-token");
+          localStorage.removeItem("jwt-token");
         }
       });
 
     if (AuthUser) {
       axios
-        .post("http://localhost:4000/cart", { cart: cart })
+        .post("http://localhost:4000/cart",{cart:cart})
         .then((res) => {
-          dispatch(setCartReplace(res.data.result));
+          dispatch(setCartReplace(res.data.Result));
           localStorage.removeItem("cart");
         })
         .catch((err) => {
-          console.log(err.message);
+          console.log(err);
         });
     }
-    localStorage.removeItem("entry-level")
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    localStorage.removeItem("entry-level");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, AuthUser]);
   return (
     <div>
