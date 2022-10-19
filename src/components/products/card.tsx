@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Star } from '@mui/icons-material'
 import { Rating } from '@mui/material'
 import { Button, Statistic } from 'antd'
@@ -32,13 +32,13 @@ export const Card = ({product}:propductprops):JSX.Element => {
           setTimeout(() => {
             setDisabler(false)
           }, 1000);
+          console.log('runn');
           let resultCart = await addToCart(product, auth, cart as CartItem[])
-          // console.log(resultCart);
-
+          
           dispatch(setCartReplace(resultCart as unknown as CartItem[]))
           auth ? dispatch(setReplaceCart([])): dispatch(setReplaceCart(resultCart as unknown as CartItem[]))
         }}>Add to Cart</Button>
         </div>
     </div>
     )
-};
+}
