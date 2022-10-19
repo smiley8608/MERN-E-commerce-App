@@ -131,74 +131,137 @@ export const UserStatus = (req:updatedRequest, res: express.Response):any => {
     }
 }
 
-const mergeCart = async (localCart: any[], UserCart: any[]) => {
-    let newArr: any[] = []
-    let localCartStore: any[] = { ...localCart }
-    let userCartStore: any[] = { ...UserCart }
+const cartMerger = (stayscart: any[], userscart: any[], decline: boolean | undefined | null): any[] => {
+    let newarr: any[] = []
 
-    for (let i = 0; i < userCartStore.length; i++) {
-        let filter = localCartStore.filter((value, index) => {
-            return String(value.product._id) === String(userCartStore[i].product._id)
-        })
-        if (filter.length > 0) {
-            const FindIndex = localCartStore.findIndex((value, index) => {
-                return String(value.product._id) === String(userCartStore[i].product._id)
-            })
-            if (localCartStore.length == 0) {
-                return newArr
-            }
-            let newItems = { product: userCartStore[FindIndex].product, quantity: localCartStore[FindIndex].quantity + userCartStore[i].quantity }
-            localCartStore = localCartStore.filter((value) => {
-                value.product._id !== userCartStore[i].product._id
-                return newArr.push(newItems)
-            })
-        } else {
-            return newArr.push(userCartStore[i])
-        } let newCart = [{ ...newArr, ...localCartStore }]
-        return newCart
+    if (!stayscart) {
+        return userscart
     }
+
+    let staycart = [...stayscart]
+    let usercart = [...userscart]
+
+
+    if (usercart.length > 0) {
+        for (let i = 0; i < usercart.length; i++) {
+            let filter = staycart.filter((value, index) => {
+                return String(value.product._id) === String(usercart[i].product._id)
+            })
+
+
+            if (filter.length > 0) {
+                let findex = staycart.findIndex(value => String(value.product._id) === String(usercart[i].product._id))
+
+
+                if (staycart.length === 0) {
+                    break
+                }
+                let newItem = { product: usercart[i].product, quantity: (decline ? staycart[findex].quantity : staycart[findex].quantity + usercart[i].quantity) }
+                staycart = staycart.filter(value => String(value.product._id) !== String(staycart[findex].product._id))
+                newarr.push(newItem)
+
+
+            } else {
+                newarr.push(usercart[i])
+            }
+        }
+        newarr = [...newarr, ...staycart]
+
+    } else {
+        newarr = [...staycart]
+    }
+    return newarr
 }
 
+export const cartChanger = async (req:updatedRequest, res: express.Response) => {
 
-export const changeCart = (req: updatedRequest, res: express.Response) => {
-    const localCart = req.body.cart
-    const userCart = req.user.cart
+    let staycart: any[] = req.body.cart
+    let usercart: any[] = req.user.cart
+    let decline: boolean | undefined | null = req.body.decline
 
-    const newCart = mergeCart(localCart, userCart)
+    console.log("staycart=====================",staycart);
+    
+
+    let newcart = cartMerger(staycart, usercart, decline)
+
     setTimeout(() => {
-
-        crudModel.findByIdAndUpdate(req.user._id, { cart: newCart })
-            .then(response => {
-                crudModel.findById(req.body._id)
-                    .then(result => {
-                        return res.json({ message: 'Add to Cart', Result:result?.cart })
-                    })
-                    .catch(err => {
-                        return res.json({ message: err })
-                    })
+        crudModel.findByIdAndUpdate(req.user._id, { cart: newcart })
+            .then(updateCartResponse => {
+                crudModel.findById(req.user._id).then(response => {
+                    res.json({ cart: response?.cart })
+                })
             })
             .catch(err => {
-                return res.json({ message: err })
+                console.log(err);
+                res.json({ message: "Cannot update cart", error: err })
             })
-    }, 3000)
-
+    }, 20);
 }
 
-export const cartDeleter=(req:updatedRequest,res:express.Response)=>{
-       const product=req.body.product
-       const cart=req.user.cart
-       let newCart=cart.filter((value:any)=>String(value.product._id) !== String(product._id))
+export const cartdeleter = async (req: updatedRequest, res: express.Response) => {
+    const product = req.body.product
+    const cart = req.user.cart
 
-       setInterval(()=>{
-        crudModel.findByIdAndUpdate(req.user._id,{cart:newCart})
-        .then(result=>{
-            crudModel.findById(req.user._id)
-            .then(responce=>{
-                return res.json({message :'cart deleted successfully',result:responce})
+    let newcart = cart.filter((item: any) => String(item.product._id) !== String(product._id))
+
+
+    setTimeout(() => {
+        crudModel.findByIdAndUpdate(req.user._id, { cart: newcart })
+            .then(updateCartResponse => {
+                crudModel.findById(req.user._id)
+                    .then(userResponse => res.json({ cart: userResponse?.cart }))
+                    .catch(err => res.json({ message: "User Error", error: err }))
             })
-            .catch(err=>res.json({message:err.message}))       
-            
+            .catch(err => {
+                console.log(err);
+                res.json({ message: "Cannot update cart", error: err })
+            })
+    }, 20);
+}
+export const changePassword = (req: updatedRequest, res: express.Response) => {
+    const { oldPassword, newPassword, confNewPassword } = req.body
+
+    if (newPassword !== confNewPassword) {
+        return res.status(406).json({ message: "Passwords didn't match" })
+    }
+
+    crudModel.findById(req.user._id)
+        .then(userFindResponse => {
+            bcrypt.compare(newPassword, userFindResponse?.password as string)
+                .then(prevpassuseCheck => {
+                    if (prevpassuseCheck) {
+                        return res.json({ message: "Your old password cannot be your new password" })
+                    }
+                    bcrypt.compare(oldPassword, userFindResponse?.password as string)
+                        .then(passCompare => {
+                            if (passCompare === false) {
+                                return res.status(406).json({ message: "Your previous password is incorrect !!!" })
+                            }
+                            bcrypt.hash(newPassword, 15)
+                                .then(hashedPass => {
+                                    crudModel.updateOne({ _id: req.user._id }, { password: hashedPass })
+                                        .then(response => {
+                                            return res.json({ message: "Your Password is updated successfully..." })
+                                        })
+                                        .catch(err => {
+                                            return res.status(406).json({ message: "Something happened." })
+                                        })
+                                })
+                                .catch(err => {
+                                    return res.status(406).json({ message: "Something happened.." })
+                                })
+                        })
+                        .catch(err => {
+                            return res.status(406).json({ message: "Something happened..." })
+                        })
+                })
+                .catch(err => {
+                    return res.status(406).json({ message: "Something happened...." })
+                })
         })
-        .catch(err=>res.json({message:err.message}))
-       })   
+        .catch(err => {
+            return res.status(406).json({ message: "Something happened....." })
+        })
+
+
 }

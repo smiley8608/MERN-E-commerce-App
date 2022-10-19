@@ -3,6 +3,7 @@ import Jwt, { Secret } from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { updatedRequest } from '../Interface'
 import crudModel from '../model/crudmodel'
+import mongoose from 'mongoose'
 
 dotenv.config()
 
@@ -20,18 +21,19 @@ const UserMiddlewere = (req: updatedRequest, res: express.Response, next: expres
             let varify = Jwt.verify(Token, ENV_SECURT)
             let decoded: any = Jwt.decode(Token)
             console.log(decoded);
-            if (req.path === '/login' || req.path === '/register') {
-                return res.json(({ Message: "Entery resticted !" }))
+            if(req.path !== "/signin" && req.path !== "/signup" && req.path !== "/forgotpassword" && req.path !== "/forgotpassword/:reseturl"){
+                crudModel.findOne({_id: new mongoose.Types.ObjectId(decoded.id)})
+                
+                .then((response) => {
+                        // console.log(response);
+                        if(response?.password){
+                            response.password = ""
+                        }
+                        req.user = response
+                        next()
+                    })
             } else {
-                crudModel.findById(decoded.id)
-                .then((result) => {
-                    console.log('right');
-                    req.user = result
-                    
-                    next()
-                }).catch((err) => {
-                    return res.json({ message: 'could not able to find the docoded id !' });
-                })
+                return res.status(401).json({message: "Hey Buddy, you're already logged in", auth: true})
             }
         } catch (err) {
             if (req.path === '/login' || req.path === '/register') {
