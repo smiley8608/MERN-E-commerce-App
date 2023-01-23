@@ -4,14 +4,15 @@ import *   as crudRouter from '../controller/crudController'
 import { Router } from 'express'
 import middleWere from '../middlewere/middleware'
 import { routerType } from '../Interface'
-
+import * as cart from '../controller/cartController'
 
 const router:routerType=Router()
 
 router.post('/login',middleWere,crudRouter.loginValidation)
 router.post('/register',middleWere,crudRouter.formValidation)
-router.post('/cart',middleWere,crudRouter.cartChanger)
+router.post('/updateuser',middleWere,crudRouter.UpdateUser)
+router.post('/cart',middleWere,cart.cartChanger)
 router.get('/authstatus',middleWere,crudRouter.UserStatus)
-router.post('/deletecart',middleWere,crudRouter.cartdeleter)
+router.post('/deletecart',middleWere,cart.cartdeleter)
 router.post('/changepassword',middleWere,crudRouter.changePassword)
 export default router

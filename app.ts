@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import router from "./router/Userrouter";
 import Cors from 'cors'
 import productRouter from "./router/productrouter";
+import transactionRouter from "./router/transactionRouter";
 
 
 const app = express()
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(router)
 app.use(productRouter)
+app.use(transactionRouter)
 mongoose.connect('mongodb://localhost:27017/crud', (err) => {
     if (err) {
         console.log("unable to connect to the server");

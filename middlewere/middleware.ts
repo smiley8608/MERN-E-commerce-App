@@ -13,22 +13,22 @@ const UserMiddlewere = (req: updatedRequest, res: express.Response, next: expres
     let Token = req.headers['jwt-token'] as string
 
     // console.log(req.headers);
-    console.log(Token);
+    // console.log(Token);
     
     if (Token && ENV_SECURT) {
         try {
             
             let varify = Jwt.verify(Token, ENV_SECURT)
             let decoded: any = Jwt.decode(Token)
-            console.log(decoded);
+            // console.log('decoded',decoded);
             if(req.path !== "/signin" && req.path !== "/signup" && req.path !== "/forgotpassword" && req.path !== "/forgotpassword/:reseturl"){
                 crudModel.findOne({_id: new mongoose.Types.ObjectId(decoded.id)})
                 
                 .then((response) => {
-                        // console.log(response);
-                        if(response?.password){
-                            response.password = ""
-                        }
+                        // console.log('response',response);
+                        // if(response?.password){
+                        //     response.password = ""
+                        // }
                         req.user = response
                         next()
                     })

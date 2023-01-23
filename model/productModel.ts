@@ -1,7 +1,7 @@
 
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema({
+export  const productSchema = new mongoose.Schema({
     title: {
         type: String,
         require: true

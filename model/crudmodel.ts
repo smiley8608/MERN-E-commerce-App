@@ -1,39 +1,72 @@
 import mongoose from "mongoose";
+import { productSchema } from "./productModel";
 
-const crudSchema = new mongoose.Schema({
+export const addressSchema = new mongoose.Schema({
+    buildingNo: {
+        type: String,
+        required: true
+    }, street: {
+        type: String,
+        required: true
+    }, country: {
+        type: String,
+        required: true
+    }, state: {
+        type: String,
+        required: true
+    }, pincode: {
+        type: Number,
+        required: true
+    }, city: {
+        type: String,
+        required: true
+    }
+})
+export const cartSchema = new mongoose.Schema({
+    product: productSchema,
+    quantity: {
+        type: Number,
+        required: true
+    }
+})
+export const crudSchema = new mongoose.Schema({
     username: {
         type: String,
-        default: '',
-        require: true
+        required: true
     },
     firstname: {
         type: String,
-        require: true,
-        default: ''
+        required: true,
     },
     lastname: {
         type: String,
-        require: true,
-        default: ''
+        required: true,
+
     },
     email: {
         type: String,
-        require: true,
-        default: ''
+        required: true,
+
     },
     phonenumber: {
         type: Number,
-        require: true,
-        default: false
+        required: true,
+
     },
 
     password: {
         type: String,
-        require: true,
-        default: ''
+        required: true,
+
     },
-    cart: [],
-    address:[ ]
+    cart: {
+        type: [cartSchema],
+        default: []
+    },
+    address: {
+        type: [addressSchema],
+        default: []
+    }
 })
 
 const crudModel = mongoose.model('Model', crudSchema)

@@ -25,6 +25,8 @@ export const formValidation = (req: express.Request, res: express.Response) => {
 
             crudModel.find({ email: email })
                 .then((response) => {
+                    // console.log(response);
+                    
                     if (response.length >= 1) {
                         return res.json({ message: 'Account already exists !' })
                     }
@@ -131,111 +133,30 @@ export const UserStatus = (req:updatedRequest, res: express.Response):any => {
     }
 }
 
-const cartMerger = (stayscart: any[], userscart: any[], decline: boolean | undefined | null): any[] => {
-    let newarr: any[] = []
 
-    if (!stayscart) {
-        return userscart
-    }
-
-    let staycart = [...stayscart]
-    let usercart = [...userscart]
-
-
-    if (usercart.length > 0) {
-        for (let i = 0; i < usercart.length; i++) {
-            let filter = staycart.filter((value, index) => {
-                return String(value.product._id) === String(usercart[i].product._id)
-            })
-
-
-            if (filter.length > 0) {
-                let findex = staycart.findIndex(value => String(value.product._id) === String(usercart[i].product._id))
-
-
-                if (staycart.length === 0) {
-                    break
-                }
-                let newItem = { product: usercart[i].product, quantity: (decline ? staycart[findex].quantity : staycart[findex].quantity + usercart[i].quantity) }
-                staycart = staycart.filter(value => String(value.product._id) !== String(staycart[findex].product._id))
-                newarr.push(newItem)
-
-
-            } else {
-                newarr.push(usercart[i])
-            }
-        }
-        newarr = [...newarr, ...staycart]
-
-    } else {
-        newarr = [...staycart]
-    }
-    return newarr
-}
-
-export const cartChanger = async (req:updatedRequest, res: express.Response) => {
-
-    let staycart: any[] = req.body.cart
-    let usercart: any[] = req.user.cart
-    let decline: boolean | undefined | null = req.body.decline
-
-    console.log("staycart=====================",staycart);
-    
-
-    let newcart = cartMerger(staycart, usercart, decline)
-
-    setTimeout(() => {
-        crudModel.findByIdAndUpdate(req.user._id, { cart: newcart })
-            .then(updateCartResponse => {
-                crudModel.findById(req.user._id).then(response => {
-                    res.json({ cart: response?.cart })
-                })
-            })
-            .catch(err => {
-                console.log(err);
-                res.json({ message: "Cannot update cart", error: err })
-            })
-    }, 20);
-}
-
-export const cartdeleter = async (req: updatedRequest, res: express.Response) => {
-    const product = req.body.product
-    const cart = req.user.cart
-
-    let newcart = cart.filter((item: any) => String(item.product._id) !== String(product._id))
-
-
-    setTimeout(() => {
-        crudModel.findByIdAndUpdate(req.user._id, { cart: newcart })
-            .then(updateCartResponse => {
-                crudModel.findById(req.user._id)
-                    .then(userResponse => res.json({ cart: userResponse?.cart }))
-                    .catch(err => res.json({ message: "User Error", error: err }))
-            })
-            .catch(err => {
-                console.log(err);
-                res.json({ message: "Cannot update cart", error: err })
-            })
-    }, 20);
-}
 export const changePassword = (req: updatedRequest, res: express.Response) => {
+    // console.log(req.body);
+    
     const { oldPassword, newPassword, confNewPassword } = req.body
 
     if (newPassword !== confNewPassword) {
-        return res.status(406).json({ message: "Passwords didn't match" })
+        return res.json({ message: "Passwords didn't match" })
     }
-
+    
     crudModel.findById(req.user._id)
-        .then(userFindResponse => {
-            bcrypt.compare(newPassword, userFindResponse?.password as string)
-                .then(prevpassuseCheck => {
-                    if (prevpassuseCheck) {
-                        return res.json({ message: "Your old password cannot be your new password" })
-                    }
-                    bcrypt.compare(oldPassword, userFindResponse?.password as string)
-                        .then(passCompare => {
+    .then(userFindResponse => {
+        bcrypt.compare(newPassword, userFindResponse?.password as string)
+        .then(prevpassuseCheck => {
+            if (prevpassuseCheck) {
+                console.log('prevpassuseCheck');
+                
+                return res.json({ message: "Your old password cannot be your new password" })
+            }
+            bcrypt.compare(oldPassword, userFindResponse?.password as string)
+            .then(passCompare => {
+                            // console.log('runner');
                             if (passCompare === false) {
-                                return res.status(406).json({ message: "Your previous password is incorrect !!!" })
+                                return res.json({ message: "Your previous password is incorrect !!!" })
                             }
                             bcrypt.hash(newPassword, 15)
                                 .then(hashedPass => {
@@ -244,24 +165,52 @@ export const changePassword = (req: updatedRequest, res: express.Response) => {
                                             return res.json({ message: "Your Password is updated successfully..." })
                                         })
                                         .catch(err => {
-                                            return res.status(406).json({ message: "Something happened." })
+                                            return res.json({ message: "Something happened." })
                                         })
                                 })
                                 .catch(err => {
-                                    return res.status(406).json({ message: "Something happened.." })
+                                    return res.json({ message: "Something happened.." })
                                 })
                         })
                         .catch(err => {
-                            return res.status(406).json({ message: "Something happened..." })
+                            return res.json({ message: "Something happened..." })
                         })
                 })
                 .catch(err => {
-                    return res.status(406).json({ message: "Something happened...." })
+                    return res.json({ message: "Something happened...." })
                 })
         })
         .catch(err => {
-            return res.status(406).json({ message: "Something happened....." })
+            return res.json({ message: "Something happened....." })
         })
 
 
+}
+const UpdateSchema = Joi.object({
+    username: Joi.string().min(6).max(13).required(),
+    firstname: Joi.string().max(30).trim().required(),
+    lastname: Joi.string().max(30).trim().required(),
+    // email: Joi.string().email().required(),
+    phonenumber: Joi.number().required()
+}).with('email', 'password')
+export const UpdateUser=async(req:updatedRequest,res:express.Response)=>{
+    // console.log(req.body);
+    
+    const {username,lname,fname,email,phonenumber}=req.body
+    // console.log(username,lname,fname,email,phonenumber);
+
+    try {
+       await UpdateSchema.validateAsync({username:username,firstname:fname,lastname:lname,phonenumber:phonenumber})
+     const userupdate= await crudModel.updateOne({_id:req.user._id},{username:username,firstname:fname,lastname:lname,email:email,phonenumber:phonenumber})
+     if(!userupdate){
+        return res.json({message:'something wents wrong!'})
+     }else{
+        return res.json({message:'Account updated successfully!',Result:userupdate})
+     }
+         
+    } catch (error) {
+        console.log(error);
+        
+    }
+    
 }
