@@ -1,5 +1,5 @@
 
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 import { addressSchema, crudSchema } from "./crudmodel";
 import { productSchema } from "./productModel";
 
@@ -36,8 +36,8 @@ const orderSchema = new mongoose.Schema({
         default: true
     },
     user: {
-        type: [crudSchema],
-        default: []
+        type:mongoose.Types.ObjectId,
+        required:true
     },deliverIn:{
         type:String,
         required:true
