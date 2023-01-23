@@ -17,14 +17,15 @@ export const ProductList = () => {
     axios
     .post(`http://localhost:4000/allProduct?rangestart=${Modifier.rangestart}&rangeend=${Modifier.rangeend}&sortby=${Modifier.sortby}&search=${Modifier.search}`,{catagories:Modifier.category})
       .then((allproducts) => {
-        console.log(allproducts);
+        console.log('allproducts',allproducts.data.products);
         dispatch(setInitialProduct(allproducts.data.products));
       })
       .catch((err) => {
         console.log(err);
       });
-  },[dispatch,Modifier]);
+  },[Modifier,dispatch]);
   const products = useAppSelector((state) => state.Product.products);
+ console.log('products',products);
  
   
   return (

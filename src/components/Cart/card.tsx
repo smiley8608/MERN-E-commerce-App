@@ -10,7 +10,8 @@ import { setReplaceCart } from "../redux/userSlice";
 
 interface cardprops {
   product:Product,
-  quantity:number
+  quantity:number,
+  key: any
 }
 
 
@@ -19,6 +20,7 @@ export const addToCart = async (product: Product, auth: boolean, cart: CartItem[
   console.log(
     '=====================',cart
   );
+  console.log(check);
   
   if (check?.length > 0) {
     let index = cart.findIndex(item => item.product._id === product._id)
@@ -47,6 +49,7 @@ export const addToCart = async (product: Product, auth: boolean, cart: CartItem[
       cart = [...cart, { product: product, quantity: 1 }]
     }
     else {
+
       cart = [{ product: product, quantity: 1 }]
     }
     localStorage.setItem("cart", JSON.stringify(cart))
@@ -55,6 +58,8 @@ export const addToCart = async (product: Product, auth: boolean, cart: CartItem[
       try {
         let promiser = await axios.post("/cart", { cart: cart ,decline:true})
         localStorage.removeItem("cart")
+        console.log("promiser.data.cart",promiser.data.cart);
+        
         return promiser.data.cart
       } catch (error: any) {
         console.log(error);
@@ -143,7 +148,7 @@ export const deletecart = async (product: Product, auth: boolean, cart: CartItem
   return newCart
 
 }
-export const Card=({product,quantity}:cardprops):any=>{
+const Card=({product,quantity, key}:cardprops):any=>{
   
   const auth=useAppSelector(state => state.User.Auth)
 
@@ -180,9 +185,15 @@ export const Card=({product,quantity}:cardprops):any=>{
           dispatch(setReplaceCart(resultCart as unknown as CartItem[]))
           dispatch(setCartReplace(auth ? [] : resultCart as unknown as CartItem[]))
         }}>Remove Product</Button>
+         <Button type='primary' className='tw-w-full tw-bg-rose-500 tw-border-rose-500 tw-mt-2' onClick={async () => {
+          let resultCart = await deletecart(product, auth, cart as CartItem[])
+          dispatch(setReplaceCart(resultCart as unknown as CartItem[]))
+          dispatch(setCartReplace(auth ? [] : resultCart as unknown as CartItem[]))
+        }}>Buy Product</Button>
 
 
       </div>
     </div>
   )
 }
+export default Card

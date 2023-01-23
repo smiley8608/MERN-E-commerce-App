@@ -7,7 +7,7 @@ export const Sorter = () => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [priceRadios, setPriceRadios] = useState<string | null>("relevance");
-  const [rangeValue, setValue] = useState<[number, number]>([10, 5000]);
+  const [rangeValue, setValue] = useState<[number, number]>([0, 5000]);
 
   const hide = () => {
     setOpen(false);
@@ -67,7 +67,7 @@ export const Sorter = () => {
           <Slider
             dots={true}
             step={100}
-            min={10}
+            min={0}
             max={5000}
             range
             defaultValue={rangeValue}

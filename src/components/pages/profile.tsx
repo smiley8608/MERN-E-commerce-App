@@ -43,16 +43,16 @@ export const Profile = () => {
   const updateProfileHandler = (e: FormEvent) => {
     e.preventDefault();
     axios
-      .post("/user/updateuser", {
+      .post("/updateuser", {
         ...data,
         phonenumber: String(data.phonenumber),
       })
-      .then((response) => {
-        message.success({
+      .then(async(response) => {
+        await message.success({
           content: response.data.message,
           style: { marginTop: 60 },
         });
-        window.location.reload();
+         window.location.reload();
       })
       .catch((err) => {
         message.error({
@@ -79,7 +79,12 @@ export const Profile = () => {
     axios
       .post("/changepassword", { ...newPassword })
       .then((response) => {
-        message.success(response.data.message);
+        console.log(response);
+        
+        message.success({
+          content: response.data.message,
+          style: { marginTop: 60 },
+        });
         setPassChangemode(false);
       })
       .catch((err) => {

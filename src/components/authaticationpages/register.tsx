@@ -27,9 +27,11 @@ const Register = () => {
       axios
         .post("http://localhost:4000/register", data)
         .then((res) => {
+          console.log(res);
+          
+          alert(res.data.message)
           localStorage.setItem("jwt-token", res.data.tkn);
           dispatch(setInitialState(res.data.result));
-          setMess(res.data.message)
 
           message.success(res.data.message)
           Navigate("/");

@@ -5,7 +5,7 @@ import AppFooter from '../layouts/Footer'
 import AppHeader from '../layouts/AppHeader'
 import AppSidebar from '../layouts/AppSideBar'
 import { CContainer, CSpinner } from '@coreui/react'
-import { CartLayouts } from '../Cart/cartLayouts'
+import CartLayouts  from '../Cart/cartLayouts'
 
 
 export const Cart = () => {

@@ -27,6 +27,7 @@ const OpenRoute = () => {
     <Routes>
       <Route path='/signup' element={<Register />} />
       <Route path='/signin' element={<Login />} />
+      {/* <Route path='/register' element={} */}
       <Route path='/forgotpassword' element={<ForgotPassword />} />
       <Route path='/internalservererror' element={<Error500 />} />
       <Route path='/*' element={<Error404 />} />

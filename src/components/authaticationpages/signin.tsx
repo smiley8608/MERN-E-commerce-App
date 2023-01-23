@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "../redux/hook";
 import {  setInitialState } from "../redux/userSlice";
@@ -77,12 +77,12 @@ export const Login = () => {
               perspiciatis voluptate ratione tempora consequatur. Assumenda, ut
               eveniet
             </p>
-            <a
+            <Link
               className="tw-rounded-xl tw-no-underline  tw-bg-white tw-p-3 tw-mt-3"
-              href="/#"
+              to="/signup"
             >
               Register!
-            </a>
+            </Link>
           </div>
         </div>
       </div>

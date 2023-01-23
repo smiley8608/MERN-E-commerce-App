@@ -31,8 +31,8 @@ function App() {
     axios
       .get("/authstatus")
       .then((res) => {
-        console.log("apple");
-        console.log(res);
+        // console.log("apple");
+        // console.log(res);
 
         dispatch(setInitialState({ Auth: res.data.auth, User: res.data.user }));
         //  alert(res.data.message)
@@ -47,8 +47,10 @@ function App() {
 
     if (AuthUser) {
       axios
-        .post("http://localhost:4000/cart",{cart:cart})
+        .post("/cart",{cart:cart})
         .then((res) => {
+          console.log('res',res);
+          
           dispatch(setCartReplace(res.data.Result));
           localStorage.removeItem("cart");
         })

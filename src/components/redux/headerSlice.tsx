@@ -1,6 +1,4 @@
-
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
-
 
 const initialState={
     sidebarShow: false,
@@ -11,9 +9,9 @@ const initialState={
         rangeend:50000,
         category:[] as string[],
         search:''
-
     }
 }
+
 const headerSlice=createSlice({
     name:'header',
     initialState:initialState,

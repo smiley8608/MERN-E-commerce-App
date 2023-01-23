@@ -9,6 +9,8 @@ import Error500 from '../authaticationpages/error500'
 import { CContainer, CSpinner } from '@coreui/react'
 import {SignOut} from '../pages/signout'
 import { useAppSelector } from '../redux/hook'
+import MetamaskTransaction from '../pages/metamasktransaction'
+import Checkout from '../Cart/checkOut'
 
 
 const MainRoute = () => {
@@ -24,6 +26,8 @@ const MainRoute = () => {
             <Route path='/profile' element={<Profile />} />
             <Route path='/signout' element={<SignOut />} />
             <Route path='/internalservererror' element={<Error500 />} />
+            <Route path='/checkout' element={<Checkout />} />
+            <Route path='/connectwallet' element={<MetamaskTransaction />} />
             <Route path='/*' element={<Error404 />} />
           </Routes>
         </Suspense>
