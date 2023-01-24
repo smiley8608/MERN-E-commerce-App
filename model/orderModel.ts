@@ -1,6 +1,6 @@
 
 import mongoose, { Mongoose } from "mongoose";
-import { addressSchema, crudSchema } from "./crudmodel";
+import { addressSchema, cartSchema, crudSchema } from "./crudmodel";
 import { productSchema } from "./productModel";
 
 const paymentSchema = new mongoose.Schema({
@@ -23,16 +23,16 @@ const orderSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true
-    }, product: [
+    }, product: 
         {
-            type: productSchema,
-            default: []
+            type: [cartSchema],
+            required:true
         }
-    ], address: [{
+    , address: {
         type: addressSchema,
-        default: []
-    }], paymentDetails: {
-        type: [paymentSchema],
+        required:true
+    }, paymentDetails: {
+        type: paymentSchema,
         default: true
     },
     user: {

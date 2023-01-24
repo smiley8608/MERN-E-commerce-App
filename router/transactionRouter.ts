@@ -7,5 +7,6 @@ const transactionRouter:routerType=express.Router()
 
 transactionRouter.get('/getserverAddress',UserMiddlewere,Transaction.serverAddress)
 transactionRouter.post('/checkouts',UserMiddlewere,Transaction.UpdatedTransaction)
+transactionRouter.get('/getalltransaction',UserMiddlewere,Transaction.getTransaction)
 
 export default transactionRouter
