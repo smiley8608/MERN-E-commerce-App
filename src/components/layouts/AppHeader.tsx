@@ -67,9 +67,7 @@ const AppHeader = () => {
           {auth && <CNavItem>
             <Link className='tw-no-underline tw-text-slate-500 tw-mx-2' to={"/u/signout"}><CNavbarText>SignOut</CNavbarText></Link>
           </CNavItem>}
-          {auth && <CNavItem> 
-            <Link className='tw-no-underline tw-text-slate-500 tw-mx-2' to={"/u/connectwallet"}><CNavbarText>ConnectWallet</CNavbarText></Link>
-          </CNavItem>}
+          
           {!auth && <CNavItem>
             <Link className='tw-no-underline tw-text-slate-500 tw-mx-2' to={"/signin"}><CNavbarText>Sign In</CNavbarText></Link>
           </CNavItem>}

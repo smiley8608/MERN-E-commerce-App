@@ -1,6 +1,6 @@
 import { message } from "antd";
 import axios from "axios";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent,  useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/hook";
 import Web3 from "web3";
@@ -9,16 +9,17 @@ import { ContractAddress } from "../contractsAssets/contractsAddress";
 // import { any } from "prop-types";
 // import { Transaction } from "ethereumjs-tx";
 
-const Checkout = () => {
+const Checkout = ({products}:any) => {
   document.title = "KeyStone | Checkout";
   const navigate = useNavigate();
   const { ethereum }: any = window;
   const web3 = new Web3(ethereum);
   const GoerliTestnet = 5;
+  console.log('product',products);
   
   //   console.log(ethereum);
   const [serverAddress,setServerAddress]=useState<any>()
-  const [Transaction,setTransaction]=useState({})
+  
   const [currentAddress, setCurrentAddress] = useState<any>();
   const [currentChainId, setCurrentChainId] = useState<any>();
   const user = useAppSelector((state: any) => state.User.user);
@@ -53,7 +54,7 @@ const Checkout = () => {
     e.preventDefault();
     
     await getserver()
-    console.log(formState, user, cart,Transaction);
+    // console.log(formState, user, cart,Transaction);
 
    
   };
@@ -131,13 +132,9 @@ const Checkout = () => {
             TransactionHash:responce.transactionHash});
           
         //   TransactionHash=responce.transactionHash
-         await setTransaction({         
+        console.log(cart);
+        
          
-             from:responce.events.Transfer.returnValues.from,
-             to:responce.events.Transfer.returnValues.to,
-             value:responce.events.Transfer.returnValues.value,
-             TransactionHash:responce.transactionHash
-          })
           await axios
           .post("/checkouts", {
             checkout: formState,
@@ -147,12 +144,13 @@ const Checkout = () => {
             hash: {         
                 from:responce.events.Transfer.returnValues.from,
                 to:responce.events.Transfer.returnValues.to,
-                amount:responce.events.Transfer.returnValues.value,
+                amount:web3.utils.fromWei(responce.events.Transfer.returnValues.value ,'ether'),
                 hash:responce.transactionHash
              }
           })
-          .then((response) => {
-            message.success(response.data.message);
+          .then(async(response) => {
+            console.log(response);
+            await message.success(response.data.message)
             navigate("/u/orders");
           })
           .catch((err) => {

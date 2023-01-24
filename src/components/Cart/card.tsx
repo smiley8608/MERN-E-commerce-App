@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { setCartReplace } from "../redux/cartSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { setReplaceCart } from "../redux/userSlice";
+import Checkout from "./checkOut";
 
 interface cardprops {
   product:Product,
@@ -148,12 +149,15 @@ export const deletecart = async (product: Product, auth: boolean, cart: CartItem
   return newCart
 
 }
+
 const Card=({product,quantity, key}:cardprops):any=>{
   
   const auth=useAppSelector(state => state.User.Auth)
 
   const cart=useAppSelector(state=>(auth ? state.User.User?.cart : state.Cart.cart))
+  
   const dispatch=useAppDispatch()
+  // console.log(product);
   
   return(
     <div className='tw-rounded-sm md:tw-rounded-md tw-flex tw-flex-col tw-shadow-xl tw-bg-white tw-shadow-gray-300 tw-cursor-pointer' >
@@ -184,14 +188,7 @@ const Card=({product,quantity, key}:cardprops):any=>{
           let resultCart = await deletecart(product, auth, cart as CartItem[])
           dispatch(setReplaceCart(resultCart as unknown as CartItem[]))
           dispatch(setCartReplace(auth ? [] : resultCart as unknown as CartItem[]))
-        }}>Remove Product</Button>
-         <Button type='primary' className='tw-w-full tw-bg-rose-500 tw-border-rose-500 tw-mt-2' onClick={async () => {
-          let resultCart = await deletecart(product, auth, cart as CartItem[])
-          dispatch(setReplaceCart(resultCart as unknown as CartItem[]))
-          dispatch(setCartReplace(auth ? [] : resultCart as unknown as CartItem[]))
-        }}>Buy Product</Button>
-
-
+        }}>Remove Product</Button>       
       </div>
     </div>
   )

@@ -25,6 +25,7 @@ const CartLayouts = () => {
             dispatch(setRefreshCart([]))
         }
     },[auth, dispatch, user?.cart])
+    //    window.location.reload()
     localStorage.removeItem("entryurl")
     
 
