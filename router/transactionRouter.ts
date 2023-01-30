@@ -2,11 +2,11 @@
 import express from 'express'
 import * as Transaction from '../controller/TransactionController'
 import { routerType } from '../Interface'
-import UserMiddlewere from '../middlewere/middleware'
+import Middlewere from '../middlewere/middleware'
 const transactionRouter:routerType=express.Router()
 
-transactionRouter.get('/getserverAddress',UserMiddlewere,Transaction.serverAddress)
-transactionRouter.post('/checkouts',UserMiddlewere,Transaction.UpdatedTransaction)
-transactionRouter.get('/getalltransaction',UserMiddlewere,Transaction.getTransaction)
+transactionRouter.get('/getserverAddress',Middlewere,Transaction.serverAddress)
+transactionRouter.post('/checkouts',Middlewere,Transaction.UpdatedTransaction)
+transactionRouter.get('/getalltransaction',Middlewere,Transaction.getTransaction)
 
 export default transactionRouter

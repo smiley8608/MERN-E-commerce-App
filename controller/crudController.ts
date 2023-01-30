@@ -119,7 +119,7 @@ export const UserStatus = (req:updatedRequest, res: express.Response):any => {
     if (!req.user) {
         
         return res.status(403).json({
-            message:'You are not allowed to logged in please try again late ',
+            message:'You are not allowed to login please try again later ',
             user: null,
             auth: false,
         })

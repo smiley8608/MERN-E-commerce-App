@@ -3,12 +3,12 @@ import { productmodel } from "../model/productModel"
 import { updatedRequest } from "../Interface"
 
 
-export const getAllProducts = (req:updatedRequest,res:express.Response) => {
+export const getAllProducts = (req: updatedRequest, res: express.Response) => {
 
     const { rangestart, rangeend, sortby, search } = req.query
     const category = req.body.catagories
     console.log({ rangestart, rangeend, sortby, search, category: category });
-    
+
 
     if (sortby !== 'relevance') {
         let sortorder: any = -1
@@ -54,7 +54,7 @@ export const getAllProducts = (req:updatedRequest,res:express.Response) => {
         let aggregatorWithSearch = { price: { $gte: Number(rangestart), $lte: Number(rangeend) }, category: category, $text: { $search: search as string } }
         let aggregatorWithoutSearch = { price: { $gte: Number(rangestart), $lte: Number(rangeend) }, category: category }
         console.log(search ? aggregatorWithSearch : aggregatorWithoutSearch);
-        
+
         productmodel.find(search ? aggregatorWithSearch : aggregatorWithoutSearch)
             .then(response => {
                 console.log("runner");
@@ -73,7 +73,7 @@ export const getAllProducts = (req:updatedRequest,res:express.Response) => {
             res.json({ products: response })
         })
         .catch(err => {
-            
+
 
             res.json({ message: err })
         })
@@ -88,5 +88,71 @@ export const searchProduct = (req: updatedRequest, res: express.Response) => {
         })
         .catch(err => {
             return res.json({ message: err })
+        })
+}
+
+export const Addproducts = (req: express.Request, res: express.Response) => {
+    console.log(req.body);
+
+    const { title, discription, price, rating, stock, brand, catagories, productphotos } = req.body
+    productmodel.findOne({ title: title, brand: brand })
+        .then((existedproduct) => {
+            if (existedproduct) {
+                return res.json({ message: 'This product allready exists' })
+            } else {
+                productmodel.create({ title: title, description: discription, price: price, rating: rating, stock: stock, brand: brand, category: catagories, thumbnail: `http://localhost:4000/${req.file?.path}` })
+                    .then(response => {
+                        return res.json({ message: 'product updated successfully' })
+                    }).catch(error => {
+                        console.log(error);
+
+                    })
+            }
+        })
+}
+
+export const DeleteProduct = (req: express.Request, res: express.Response) => {
+    const { id } = req.body
+    console.log(req.body)
+    console.log(id);
+
+    productmodel.findByIdAndRemove({ _id: id })
+        .then(result => {
+            return res.json({ message: 'Products deleted successfully' })
+        }).catch(error => {
+            return res.json({ message: error })
+        })
+
+}
+export const getProduct = (req: express.Request, res: express.Response) => {
+
+    console.log(req.body)
+    const { id } = req.body
+    productmodel.findOne({ _id: id })
+        .then(result => {
+            if (!result) {
+                return res.json({ message: 'these product does not exist!' })
+            } else {
+                console.log(result)
+                return res.json({ product: result })
+
+            }
+        })
+}
+
+export const UpdateProducts = (req: express.Request, res: express.Response) => {
+    console.log(req.file)
+    const { _id, title, description, price, stock, rating, category, brand } = req.body
+    productmodel.findByIdAndUpdate({ _id: _id }, { title: title, description: description, price: price, stock: stock, rating: rating, category: category, brand: brand, thumbnail: `http://localhost:4000/${req.file?.path}` })
+        .then(result => {
+
+            
+            if (!result) {
+                return res.json({ message: 'products cannot updated' })
+            } else {
+                console.log(result);
+
+                return res.json({ message: 'producted successfully' })
+            }
         })
 }
