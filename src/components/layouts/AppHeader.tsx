@@ -27,7 +27,7 @@ const AppHeader = () => {
   const dispatch = useAppDispatch()
   const auth = useAppSelector((state) => state.User.Auth)
   const sidebarShow = useAppSelector((state) => state.Slidbar.sidebarShow)
-  console.log(auth + 'header');
+  // console.log(auth + 'header');
   
 
   return (

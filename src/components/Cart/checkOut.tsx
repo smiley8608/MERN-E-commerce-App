@@ -1,25 +1,25 @@
 import { message } from "antd";
 import axios from "axios";
-import { FormEvent,  useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/hook";
 import Web3 from "web3";
-import ContractABI from '../contractsAssets/ContractABI.json'
+import ContractABI from "../contractsAssets/ContractABI.json";
 import { ContractAddress } from "../contractsAssets/contractsAddress";
 // import { any } from "prop-types";
 // import { Transaction } from "ethereumjs-tx";
 
-const Checkout = ({products}:any) => {
+const Checkout = ({ products }: any) => {
   document.title = "KeyStone | Checkout";
   const navigate = useNavigate();
   const { ethereum }: any = window;
   const web3 = new Web3(ethereum);
   const GoerliTestnet = 5;
-  console.log('product',products);
-  
+  console.log("product", products);
+
   //   console.log(ethereum);
-  const [serverAddress,setServerAddress]=useState<any>()
-  
+  const [serverAddress, setServerAddress] = useState<any>();
+
   const [currentAddress, setCurrentAddress] = useState<any>();
   const [currentChainId, setCurrentChainId] = useState<any>();
   const user = useAppSelector((state: any) => state.User.user);
@@ -48,15 +48,11 @@ const Checkout = ({products}:any) => {
       </div>
     );
   }
-  
 
-  const checkoutHandler =async (e: FormEvent) => {
+  const checkoutHandler = async (e: FormEvent) => {
     e.preventDefault();
-    
-    await getserver()
-    // console.log(formState, user, cart,Transaction);
 
-   
+    await getserver();
   };
 
   const connectWallet = async () => {
@@ -98,75 +94,120 @@ const Checkout = ({products}:any) => {
       console.log(error);
     }
   };
-  const getserver= async()=>{
-    await axios.get('/getserverAddress')
-    .then(async (responce)=>{
+  const getserver = async () => {
+    await axios
+      .get("/getserverAddress")
+      .then(async (responce) => {
         console.log(responce.data.serverAddress);
-        setServerAddress(responce.data.serverAddress)
-        await sendTransaction(responce.data.serverAddress)
-    }).catch(error=>{
+        await setServerAddress(responce.data.serverAddress);
+        // await sendTransaction(responce.data.serverAddress);
+        await sendCoinTransaction();
+      })
+      .catch((error) => {
         console.log(error);
-        
-    })
-  }
-  const sendTransaction=async(address:any)=>{
+      });
+  };
+  const sendCoinTransaction = async () => {
     try {
-        console.log(address);
-        
-        const currentAccount= await web3.eth.getAccounts()
-        if(!currentAccount){
-            console.log('canot get account address from metamask');
-            
-        }
-        const Contract= new  web3.eth.Contract(ContractABI as [],ContractAddress)
-        console.log(Contract);
-        const amount= web3.utils.toHex(web3.utils.toWei(String(total),'ether'))
-        console.log(currentAccount);
-        
-       await Contract.methods.transfer(address,amount).send({from:currentAccount[0]})
-        .then(async(responce:any)=>{
-          await  console.log(responce);
-          console.log({from:responce.events.Transfer.returnValues.from,
-            to:responce.events.Transfer.returnValues.to,
-            value:responce.events.Transfer.returnValues.value,
-            TransactionHash:responce.transactionHash});
-          
-        //   TransactionHash=responce.transactionHash
-        console.log(cart);
-        
-         
-          await axios
+      if (!ethereum) {
+        alert("please connect to the network");
+      } else {
+        const amount = web3.utils.toHex(
+          web3.utils.toWei(String(total / 3650), "ether")
+        );
+
+        console.log(amount, serverAddress, currentAddress);
+        const transaction = await web3.eth.sendTransaction({
+          from: currentAddress,
+          to: serverAddress,
+          value: amount,
+        });
+        console.log(transaction);
+        axios
           .post("/checkouts", {
+            payable: total / 3650,
             checkout: formState,
-            user: user,
-            cart,
-            payable: total,
-            hash: {         
-                from:responce.events.Transfer.returnValues.from,
-                to:responce.events.Transfer.returnValues.to,
-                amount:web3.utils.fromWei(responce.events.Transfer.returnValues.value ,'ether'),
-                hash:responce.transactionHash
-             }
+            cart: cart,
+            hash: {
+              from: transaction.from,
+              to: transaction.to,
+              amount:total/3650,
+              hash: transaction.transactionHash,
+            },
           })
-          .then(async(response) => {
-            console.log(response);
-            await message.success(response.data.message)
-            navigate("/u/orders");
+          .then((result: any) => {
+            console.log(result.data);
+          }).catch((error:any)=>{
+            console.log(error)
           })
-          .catch((err) => {
-            message.error(err.response.data.message);
-          });
-        })
-        .catch((error:any)=>{
-            console.log(error);
-            
-        })
-        
+      }
     } catch (error) {
-        console.log(error);
-        
+      console.log(error);
     }
-  }
+  };
+  const sendTransaction = async (address: any) => {
+    try {
+      console.log(address);
+
+      const currentAccount = await web3.eth.getAccounts();
+      if (!currentAccount) {
+        console.log("canot get account address from metamask");
+      }
+      const Contract = new web3.eth.Contract(
+        ContractABI as [],
+        ContractAddress
+      );
+      console.log(Contract);
+      const amount = web3.utils.toHex(web3.utils.toWei(String(total), "ether"));
+      console.log(currentAccount);
+
+      await Contract.methods
+        .transfer(address, amount)
+        .send({ from: currentAccount[0] })
+        .then(async (responce: any) => {
+          await console.log(responce);
+          console.log({
+            from: responce.events.Transfer.returnValues.from,
+            to: responce.events.Transfer.returnValues.to,
+            value: responce.events.Transfer.returnValues.value,
+            TransactionHash: responce.transactionHash,
+          });
+
+          //   TransactionHash=responce.transactionHash
+          console.log(cart);
+
+          await axios
+            .post("/checkouts", {
+              checkout: formState,
+              user: user,
+              cart,
+              payable: total,
+              hash: {
+                from: responce.events.Transfer.returnValues.from,
+                to: responce.events.Transfer.returnValues.to,
+                amount: web3.utils.fromWei(
+                  responce.events.Transfer.returnValues.value,
+                  "ether"
+                ),
+                hash: responce.transactionHash,
+              },
+            })
+            .then(async (response) => {
+              console.log(response);
+              await message.success(response.data.message);
+              navigate("/u/orders");
+            })
+            .catch((err) => {
+              message.error(err.response.data.message);
+            });
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="container wow fadeIn">
