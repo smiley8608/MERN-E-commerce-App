@@ -62,11 +62,6 @@ const _nav = [
         name: 'ProductList',
         to: '/product/productlist',
       },
-      // {
-      //   component: CNavItem,
-      //   name: 'edit',
-      //   to: '/product/edit',
-      // },
     ],
   },
   {

@@ -1,6 +1,7 @@
 import React from 'react'
 import OrdersList from './views/orders/orderlist'
 import AddProducts from './views/products/add'
+import EditProducts from './views/products/edit'
 import ListProduct from './views/products/list'
 import Userlist from './views/user/userlist'
 
@@ -59,6 +60,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/product/addproduct', name: 'AddProducts', element: AddProducts },
   { path: '/product/productlist', name: 'ListProducts', element: ListProduct },
+  { path: '/product/edit', name: 'EditProduct', element: EditProducts },
   { path: '/user/userlist', name: 'UserList', element: Userlist },
   { path: '/order/order-list', name: 'UserList', element: OrdersList },
   /*

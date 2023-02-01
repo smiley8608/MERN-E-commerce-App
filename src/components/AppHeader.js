@@ -21,6 +21,8 @@ import { logo } from 'src/assets/brand/logo'
 const AppHeader = () => {
   const dispatch = useDispatch()
   // const sidebarShow = useSelector((state) => state.sidebarShow)
+  const Auth = useSelector((state) => state.Admin.Auth)
+  console.log('Auth', Auth)
 
   return (
     <CHeader position="sticky" className="mb-4">
@@ -40,22 +42,35 @@ const AppHeader = () => {
               Dashboard
             </CNavLink>
           </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink to="/login" component={NavLink}>
-              Login
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink to="/register" component={NavLink}>
-              register
-            </CNavLink>
-          </CNavItem>
+          {Auth && (
+            <CNavItem>
+              <CNavLink href="#">Users</CNavLink>
+            </CNavItem>
+          )}
+          {Auth && (
+            <CNavItem>
+              <CNavLink href="#">Settings</CNavLink>
+            </CNavItem>
+          )}
+          {Auth && (
+            <CNavItem>
+              <CNavLink href="#">SignOut</CNavLink>
+            </CNavItem>
+          )}
+          {!Auth && (
+            <CNavItem>
+              <CNavLink to="/login" component={NavLink}>
+                Login
+              </CNavLink>
+            </CNavItem>
+          )}
+          {!Auth && (
+            <CNavItem>
+              <CNavLink to="/register" component={NavLink}>
+                register
+              </CNavLink>
+            </CNavItem>
+          )}
         </CHeaderNav>
         <CHeaderNav>
           <CNavItem>

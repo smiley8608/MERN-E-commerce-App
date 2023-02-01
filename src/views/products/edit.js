@@ -35,21 +35,47 @@ const EditProducts = () => {
     stock: '',
     brand: '',
     category: '',
-    thumbnail: '',
   })
+  const [selectedFiles, setSelectedFiles] = useState()
+  const [preview, setPreview] = useState()
+  const [loading, setloading] = useState(true)
   const navigate = useNavigate()
   useEffect(() => {
+    getProducts()
+    if (!selectedFiles) {
+      setPreview(undefined)
+      return
+    }
+    const objectUrl = URL.createObjectURL(selectedFiles)
+    setPreview(objectUrl)
+
+    return () => {
+      URL.revokeObjectURL(objectUrl)
+    }
+  }, [selectedFiles])
+  //   const handleFileChange = () => {}
+  const getProducts = async () => {
     axios
       .post('http://localhost:4000/getproduct', { id })
       .then((result) => {
         console.log(result.data)
         setdata(result.data.product)
+        // setSelectedFiles(result.data.product.thumbnail)
       })
       .catch((error) => {
         console.log(error)
       })
-  }, [])
-  //   const handleFileChange = () => {}
+  }
+  // setSelectedFiles(data.thumbnail)
+  const onSelectedFilesChange = (e) => {
+    if (!e.target.files && e.target.files[0] === '') {
+      setSelectedFiles(undefined)
+    } else {
+      setSelectedFiles(e.target.files[0])
+      setloading(false)
+      // setdata({ ...data, thumbnail: e.target.files[0] })
+    }
+  }
   const Submit = (e) => {
     const form = new FormData()
     e.preventDefault()
@@ -63,7 +89,7 @@ const EditProducts = () => {
     form.append('stock', data.stock)
     form.append('brand', data.brand)
     form.append('catagories', data.category)
-    form.append('productphotos', data.thumbnail)
+    form.append('productphotos', selectedFiles)
     axios
       .post('http://localhost:4000/editproduct', form, {
         headers: {
@@ -79,7 +105,7 @@ const EditProducts = () => {
       })
     navigate('/product/productlist')
   }
-
+  console.log(data.thumbnail)
   return (
     <div className="flex justify-center items-center">
       <div>
@@ -186,11 +212,28 @@ const EditProducts = () => {
                       type="file"
                       id="thumbnail"
                       multiple={true}
+                      // defaultValue={data.thumbnail}
+                      // value={`${data.thumbnail}`}
                       accept={'images/*'}
-                      onChange={(e) => {
-                        setdata({ ...data, thumbnail: e.target.files[0] })
-                      }}
+                      onChange={onSelectedFilesChange}
+                      // onChange={(e) => {
+                      //   setdata({ ...data, thumbnail: e.target.files[0] })
+                      // }}
                     />
+                    {loading && (
+                      <img
+                        src={data.thumbnail}
+                        alt={'imagephoto'}
+                        style={{ width: '400px', height: '200px', marginTop: '15px' }}
+                      />
+                    )}
+                    {selectedFiles && (
+                      <img
+                        src={preview}
+                        alt={'imagephoto'}
+                        style={{ width: '500px', height: '200px', marginTop: '15px' }}
+                      />
+                    )}
                     {/* <span className="text-danger">{error && error.image}</span> */}
                   </div>
                 </CForm>

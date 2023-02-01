@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import {
@@ -18,7 +18,8 @@ import {
 // import { title } from 'process'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { message } from 'antd'
+import { message, Skeleton } from 'antd'
+import { height, margin } from '@mui/system'
 
 const AddProducts = () => {
   const navigate = useNavigate()
@@ -32,8 +33,29 @@ const AddProducts = () => {
     catagories: '',
     images: '',
   })
-
+  const [selectedFiles, setSelectedFiles] = useState()
+  const [preview, setPreview] = useState()
   //   const handleFileChange = () => {}
+
+  useEffect(() => {
+    if (!selectedFiles) {
+      setPreview(undefined)
+      return
+    }
+    const objectUrl = URL.createObjectURL(selectedFiles)
+    setPreview(objectUrl)
+    return () => {
+      URL.revokeObjectURL(objectUrl)
+    }
+  }, [selectedFiles])
+  const onSelectFileChange = (e) => {
+    if (!e.target.files || e.target.files[0] === '') {
+      setSelectedFiles(undefined)
+      return
+    } else {
+      setSelectedFiles(e.target.files[0])
+    }
+  }
   const SubmitHandler = (e) => {
     const form = new FormData()
 
@@ -46,9 +68,9 @@ const AddProducts = () => {
       data.stock === '' ||
       data.brand === '' ||
       data.catagories === '' ||
-      data.images === ''
+      selectedFiles === ''
     ) {
-      return message.success('please fill the input fields')
+      return alert('please fill the input fields')
     }
     console.log(data)
 
@@ -59,7 +81,7 @@ const AddProducts = () => {
     form.append('stock', data.stock)
     form.append('brand', data.brand)
     form.append('catagories', data.catagories)
-    form.append('productphotos', data.images)
+    form.append('productphotos', selectedFiles)
     axios
       .post('http://localhost:4000/addproducts', form, {
         headers: {
@@ -180,11 +202,17 @@ const AddProducts = () => {
                   id="images"
                   multiple={true}
                   accept={'images/*'}
-                  onChange={(e) => {
-                    setdata({ ...data, images: e.target.files[0] })
-                  }}
+                  onChange={onSelectFileChange}
                 />
                 {/* <span className="text-danger">{error && error.image}</span> */}
+
+                {selectedFiles && (
+                  <img
+                    src={preview}
+                    alt={'Imagepreview'}
+                    style={{ width: '500px', height: '200px', marginTop: '15px' }}
+                  />
+                )}
               </div>
             </CForm>
           </CCardBody>

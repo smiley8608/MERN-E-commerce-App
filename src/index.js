@@ -7,7 +7,12 @@ import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
 import store from './views/redux/store'
 import 'antd/dist/reset.css'
+import axios from 'axios'
 
+let token = localStorage.getItem('admin-token')
+if (token) {
+  axios.defaults.headers.common['admin-token'] = token
+}
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <App />

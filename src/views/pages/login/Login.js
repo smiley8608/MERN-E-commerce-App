@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -18,22 +18,25 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { setInitialState } from 'src/views/redux/Adminslice'
+import { message } from 'antd'
 
 const Login = () => {
   const [data, setData] = useState({ email: '', password: '' })
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const submitHandler = (e) => {
-    e.preventDeafult()
+    e.preventDefault()
     if (data.email === '' || data.password === '') {
       return console.log('please enter the inputs ')
     } else {
       console.log(data)
       axios
-        .post('http://localhost:4000/login', data)
+        .post('http://localhost:4000/admin/login', data)
         .then((response) => {
-          localStorage.setItem('Admin-token', response.data.tkn)
+          localStorage.setItem('admin-token', response.data.tkn)
           dispatch(setInitialState({ Admin: response.data.Admin, Auth: response.data.Auth }))
-          console.log(response.data.message)
+          message.success(response.data.message)
+          navigate('/products')
         })
         .catch((error) => {
           console.log(error)
@@ -84,7 +87,7 @@ const Login = () => {
                           color="primary"
                           className="px-4"
                           type="submit"
-                          onChange={submitHandler}
+                          onClick={submitHandler}
                         >
                           Login
                         </CButton>

@@ -111,7 +111,7 @@ const ListProduct = () => {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   {columns.map((column) => {
                     const value = row[column.id]
                     // console.log(row)
@@ -137,7 +137,7 @@ const ListProduct = () => {
                       <Button type="primary" danger onClick={() => deleteHandler(row._id)}>
                         Delete
                       </Button>
-                      <Link to={`/edit?id=${row._id}`}>
+                      <Link to={`/product/edit?id=${row._id}`}>
                         <Button type="primary">Edit</Button>
                       </Link>
                     </Space>

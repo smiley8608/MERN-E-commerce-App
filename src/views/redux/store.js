@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import adminslice from './Adminslice'
 const store = configureStore({
   reducer: {
-    admin: adminslice,
+    Admin: adminslice,
   },
 })
 

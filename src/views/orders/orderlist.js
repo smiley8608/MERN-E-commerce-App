@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import axios from 'axios'
 import { RoomRounded } from '@mui/icons-material'
+import { MenuItem, TextField } from '@mui/material'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,6 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const OrderList = () => {
   const [orderList, setOrderList] = useState([])
+  const [data, setData] = useState([])
   useEffect(() => {
     axios
       .get('http://localhost:4000/admin/getallorder')
@@ -45,6 +47,29 @@ const OrderList = () => {
   }, [])
   // const rows = [...orderList]
   console.log(orderList)
+
+  const orderStatus = [
+    {
+      value: 'order-placed',
+      label: 'Orderplaced',
+    },
+    {
+      value: 'order-packed',
+      label: 'OrderPacked',
+    },
+    {
+      value: 'order-shipped',
+      label: 'OrderShipped',
+    },
+
+    {
+      value: 'order-delivared',
+      label: 'Order Delivared',
+    },
+  ]
+  const silcedAddress = (id) => {
+    return `${id.slice(0, 4)}......${id.slice(id.length - 4)}`
+  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -52,7 +77,7 @@ const OrderList = () => {
           <TableRow>
             <TableCell>OrderId</TableCell>
             <TableCell align="right">Email</TableCell>
-            <TableCell align="right">PinCode</TableCell>
+            <TableCell align="right">Address</TableCell>
             <TableCell align="right">Products</TableCell>
 
             <TableCell align="right">Amount</TableCell>
@@ -65,7 +90,7 @@ const OrderList = () => {
           {orderList.map((row) => (
             <StyledTableRow key={row._id}>
               <StyledTableCell component="th" scope="row">
-                {row._id}
+                {silcedAddress(row._id)}
               </StyledTableCell>
               <StyledTableCell align="right">{row.user_id.email}</StyledTableCell>
               <StyledTableCell align="right">
@@ -74,24 +99,53 @@ const OrderList = () => {
               </StyledTableCell>
               {row.product.map((items) => {
                 return (
-                  <div key={items._id}>
+                  <StyledTableRow key={items._id}>
                     <StyledTableCell align="right">{items.product.title}</StyledTableCell>
                     <StyledTableCell align="right">{items.quantity}</StyledTableCell>
-                  </div>
+                  </StyledTableRow>
                 )
               })}
               <StyledTableCell align="right">{row.amount}</StyledTableCell>
               <StyledTableCell align="right">
                 <a
-                  href={`https://etherscan.io/token/${row.paymentDetails.hash}`}
+                  href={`https://goerli.etherscan.io/tx/${row.paymentDetails.hash}`}
                   target={'_blank'}
                   rel="noreferrer"
                 >
-                  {row.paymentDetails.hash}
+                  {silcedAddress(row.paymentDetails.hash)}
                 </a>
               </StyledTableCell>
               <StyledTableCell align="right">{row.deliverIn}</StyledTableCell>
-              <StyledTableCell align="right">{row.deliverIn}</StyledTableCell>
+              <StyledTableCell align="right">
+                {' '}
+                <TextField
+                  id="outlined-select-status"
+                  select
+                  // type={'submit'}
+                  label="order-status"
+                  value={data}
+                  defaultValue="order-placed"
+                  onChange={(e) => {
+                    axios
+                      .post('http://localhost:4000/admin/orderstatus', {
+                        _id: row._id,
+                        delivaryStatus: e.target.value,
+                      })
+                      .then((response) => {
+                        console.log(response.data)
+                      })
+                      .catch((error) => {
+                        console.log(error)
+                      })
+                  }}
+                >
+                  {orderStatus.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

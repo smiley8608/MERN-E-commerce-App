@@ -16,9 +16,12 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { setInitialState } from 'src/views/redux/Adminslice'
+import { message } from 'antd'
+import { useNavigate } from 'react-router-dom'
 const Register = () => {
   const [data, setData] = useState({ username: '', email: '', password: '', conformPassword: '' })
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const submithandler = (e) => {
     e.preventDefault()
     if (
@@ -27,15 +30,16 @@ const Register = () => {
       data.password === '' ||
       data.conformPassword === ''
     ) {
-      return console.log('please enter the input fields')
+      return message.success('please enter the input fields')
     } else {
       console.log(data)
       axios
         .post('http://localhost:4000/admin/register', data)
         .then((response) => {
-          localStorage.setItem('Admin-token', response.data.tkn)
+          localStorage.setItem('admin-token', response.data.tkn)
           dispatch(setInitialState({ Admin: response.data.Admin, Auth: response.data.Auth }))
-          alert(response.data.message)
+          message.success(response.data.message)
+          navigate('/product')
         })
         .catch((error) => {
           console.log(error)

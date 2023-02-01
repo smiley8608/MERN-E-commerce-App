@@ -69,7 +69,6 @@ const UserList = () => {
               </StyledTableCell>
               <StyledTableCell align="right">{row.username}</StyledTableCell>
               <StyledTableCell align="right">{row.email}</StyledTableCell>
-
               <StyledTableCell align="right">{row.firstname}</StyledTableCell>
               <StyledTableCell align="right">{row.lastname}</StyledTableCell>
               <StyledTableCell align="right">{row.phonenumber}</StyledTableCell>
