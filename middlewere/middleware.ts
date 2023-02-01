@@ -12,8 +12,8 @@ const Middlewere = (req: updatedRequest, res: express.Response, next: express.Ne
     let ENV_SECURT = process.env.TOKEN_SECURT as Secret
     let Token = req.headers['jwt-token'] as string
 
-    // console.log(req.headers);
-    // console.log(Token);
+    console.log(req.headers);
+    console.log(Token);
     
     if (Token && ENV_SECURT) {
         try {

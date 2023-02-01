@@ -10,9 +10,11 @@ const AdminRouter:routerType=express.Router()
 
 
 AdminRouter.post('/register',AdminMiddlewere,Admin.createAdmin)
+AdminRouter.get('/authStatus',AdminMiddlewere,Admin.authStatus)
 AdminRouter.post('/login',AdminMiddlewere,Admin.AdminLogin)
 AdminRouter.get('/allproducts',Admin.allproducts)
 AdminRouter.get('/getallorder',Admin.OrderList)
 AdminRouter.get('/getalluser',Admin.UserList)
+AdminRouter.post('/orderstatus',Admin.UpdateOrder)
 
 export default AdminRouter

@@ -5,9 +5,9 @@ import router from "./router/Userrouter";
 import Cors from 'cors'
 import productRouter from "./router/productrouter";
 import transactionRouter from "./router/transactionRouter";
-import { updateLiteralTypeNode } from "typescript";
+
 import morgan from 'morgan'
-import { allowedNodeEnvironmentFlags } from "process";
+
 import AdminRouter from "./router/adminrouter";
 
 const app = express()
@@ -18,7 +18,7 @@ app.use(Cors({
 }))
 
 app.use(bodyParser.urlencoded({ extended: false }))
-// app.use(morgan("dev"))
+app.use(morgan("dev"))
 app.use(express.json())
 app.use(router)
 app.use('/productphotos',express.static('productphotos'))

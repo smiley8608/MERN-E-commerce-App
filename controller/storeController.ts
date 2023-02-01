@@ -142,8 +142,10 @@ export const getProduct = (req: express.Request, res: express.Response) => {
 
 export const UpdateProducts = (req: express.Request, res: express.Response) => {
     console.log(req.file)
-    const { _id, title, description, price, stock, rating, category, brand } = req.body
-    productmodel.findByIdAndUpdate({ _id: _id }, { title: title, description: description, price: price, stock: stock, rating: rating, category: category, brand: brand, thumbnail: `http://localhost:4000/${req.file?.path}` })
+    console.log(req.body);
+    
+    const { _id, title, discription, price, stock, rating, catagories, brand } = req.body
+    productmodel.findByIdAndUpdate({ _id: _id }, { title: title, description: discription, price: price, stock: stock, rating: rating, category: catagories, brand: brand, thumbnail: `http://localhost:4000/${req.file?.path}` })
         .then(result => {
 
             

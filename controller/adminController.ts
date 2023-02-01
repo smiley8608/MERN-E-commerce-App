@@ -8,10 +8,7 @@ import Jwt from 'jsonwebtoken';
 import crudModel from '../model/crudmodel';
 import { productmodel } from '../model/productModel';
 import OrderModel from '../model/orderModel';
-
-
-
-
+import { AdminUpdatedRequest } from '../Interface';
 
 dotenv.config()
 const AdminSchema = Joi.object({
@@ -34,7 +31,7 @@ export const createAdmin = async (req: express.Request, res: express.Response) =
                 } else {
                     const AdminAccount = await AdminModel.create({ username: username, email: email, password: hasedPassword })
                     if (process.env.TOKEN_SECURT) {
-                        let token = Jwt.sign('Admin-token', process.env.TOKEN_SECURT)
+                        let token = Jwt.sign({ id: AdminAccount._id }, process.env.TOKEN_SECURT)
                         return res.json({ message: 'Admin created SUccessfully!', Admin: AdminAccount, Auth: true, tkn: token })
                     }
                 }
@@ -71,7 +68,7 @@ export const AdminLogin = async (req: express.Request, res: express.Response) =>
                 return res.json({ message: 'Please check the password' })
             } else {
                 if (process.env.TOKEN_SECURT) {
-                    let token = Jwt.sign('Admin-token', process.env.TOKEN_SECURT)
+                    let token = Jwt.sign({ id: AdminAccount._id }, process.env.TOKEN_SECURT)
                     return res.json({ message: "Account login successfully", Admin: AdminAccount, Auth: true, tkn: token })
                 }
             }
@@ -79,6 +76,16 @@ export const AdminLogin = async (req: express.Request, res: express.Response) =>
     } catch (error) {
         console.log(error);
 
+    }
+
+}
+
+export const authStatus = (req: AdminUpdatedRequest, res: express.Response) => {
+
+    if (req.Admin) {
+        res.json({ Admin: req.Admin, Auth: true })
+    } else {
+        res.json({ Admin: null, Auth: false })
     }
 
 }
@@ -110,7 +117,7 @@ export const UserList = (req: express.Request, res: express.Response) => {
     crudModel.find({})
         .then((result) => {
             console.log(result.length);
-            
+
             if (result.length > 0) {
 
                 return res.json({ user: result })
@@ -119,6 +126,21 @@ export const UserList = (req: express.Request, res: express.Response) => {
             }
         })
         .catch(error => {
+            console.log(error);
+
+        })
+}
+
+export const UpdateOrder = (req: express.Request, res: express.Response) => {
+    console.log(req.body);
+
+    const { _id, delivaryStatus } = req.body
+
+    OrderModel.findByIdAndUpdate({ _id: _id }, { deliverStatus: delivaryStatus })
+        .then(result => {
+            console.log(result);
+            return res.json({ message: 'delivery status updated !' })
+        }).catch((error) => {
             console.log(error);
 
         })
