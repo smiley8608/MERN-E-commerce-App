@@ -16,5 +16,7 @@ AdminRouter.get('/allproducts',Admin.allproducts)
 AdminRouter.get('/getallorder',Admin.OrderList)
 AdminRouter.get('/getalluser',Admin.UserList)
 AdminRouter.post('/orderstatus',Admin.UpdateOrder)
+AdminRouter.get('/orderrefund',Admin.RefundStatus)
+AdminRouter.post('/refundstatus',Admin.RefundStatusUpdate)
 
 export default AdminRouter

@@ -145,3 +145,20 @@ export const UpdateOrder = (req: express.Request, res: express.Response) => {
 
         })
 }
+
+export const RefundStatus = (req: express.Request, res: express.Response) => {
+    OrderModel.aggregate([{ $lookup: { from: 'models', localField: 'user', foreignField: '_id', as: 'user_id' } }, { $unwind: '$user_id' }, { $match: { deliverStatus: 'order-cancelled' } }])
+        .then(order => {
+            if (order.length < 1) {
+                return res.json({ message: 'no refund Orders available' })
+            } else {
+                return res.json({ Order: order })
+            }
+        })
+}
+
+export const RefundStatusUpdate=(req:express.Request,res:express.Response)=>{
+    console.log(req.body);
+    const {}=req.body
+    
+}

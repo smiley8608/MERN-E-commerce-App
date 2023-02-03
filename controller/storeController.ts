@@ -141,20 +141,38 @@ export const getProduct = (req: express.Request, res: express.Response) => {
 }
 
 export const UpdateProducts = (req: express.Request, res: express.Response) => {
-    console.log(req.file)
-    console.log(req.body);
-    
-    const { _id, title, discription, price, stock, rating, catagories, brand } = req.body
-    productmodel.findByIdAndUpdate({ _id: _id }, { title: title, description: discription, price: price, stock: stock, rating: rating, category: catagories, brand: brand, thumbnail: `http://localhost:4000/${req.file?.path}` })
-        .then(result => {
+    const { _id, title, discription, price, stock, rating, catagories, brand, productphotos } = req.body
+    console.log("req.file", req.file)
+    console.log("req.body", req.body);
+    if (req.file === undefined) {
+        productmodel.findByIdAndUpdate({ _id: _id }, { title: title, description: discription, price: price, stock: stock, rating: rating, category: catagories, brand: brand, thumbnail: productphotos })
+            .then(result => {
 
-            
-            if (!result) {
-                return res.json({ message: 'products cannot updated' })
-            } else {
-                console.log(result);
 
-                return res.json({ message: 'producted successfully' })
-            }
-        })
+                if (!result) {
+                    return res.json({ message: 'products cannot updated' })
+                } else {
+                    console.log("result", result);
+
+                    return res.json({ message: 'producted successfully' })
+                }
+            })
+
+    } else {
+        productmodel.findByIdAndUpdate({ _id: _id }, { title: title, description: discription, price: price, stock: stock, rating: rating, category: catagories, brand: brand, thumbnail: `http://localhost:4000/${req.file?.path}` })
+            .then(result => {
+
+
+                if (!result) {
+                    return res.json({ message: 'products cannot updated' })
+                } else {
+                    console.log("result", result);
+
+                    return res.json({ message: 'producted successfully' })
+                }
+            })
+
+    }
+
+
 }

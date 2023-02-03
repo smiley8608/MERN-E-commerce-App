@@ -19,16 +19,16 @@ export const UpdatedTransaction = (req: updatedRequest, res: express.Response) =
 
 
     const { checkout, cart, payable, hash } = req.body
-    console.log('checkout',checkout, "cart",cart, "payable",payable, "hash",hash );
+    console.log('checkout', checkout, "cart", cart, "payable", payable, "hash", hash);
     console.log(cart);
 
     if (hash === '') {
         return res.json({ message: "unable to find the hash" })
     } else {
         // productmodel.find({_id:cart})
-        OrderModel.create({ amount: payable, product: cart, address: checkout, paymentDetails: hash, user: req.user._id, deliverIn: '7' ,deliverStatus:'order-placed'})
+        OrderModel.create({ amount: payable, product: cart, address: checkout, paymentDetails: hash, user: req.user._id, deliverIn: '7', deliverStatus: 'order-placed' })
             .then(responce => {
-                
+
                 cart.map((cartItem: any) => {
 
                     productmodel.findById(cartItem.product._id)
@@ -61,10 +61,12 @@ export const UpdatedTransaction = (req: updatedRequest, res: express.Response) =
     }
 }
 
-export const getTransaction = (req: express.Request, res: express.Response) => {
+export const getTransaction = (req: updatedRequest, res: express.Response) => {
 
-    OrderModel.find({})
+    OrderModel.find({ user: req.user._id })
         .then(responce => {
+            console.log(responce);
+            
             if (responce.length >= 1) {
                 return res.json({ result: responce })
             } else {
