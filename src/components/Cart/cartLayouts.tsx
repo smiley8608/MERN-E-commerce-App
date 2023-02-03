@@ -15,6 +15,7 @@ const CartLayouts = () => {
     const nonauthcart = useAppSelector(state => state.Cart.cart)
     if(auth){
         cart = authcart as CartItem[]
+        // window.location.reload()
     } else {
         cart = nonauthcart
     }
@@ -25,7 +26,6 @@ const CartLayouts = () => {
             dispatch(setRefreshCart([]))
         }
     },[auth, dispatch, user?.cart])
-    //    window.location.reload()
     localStorage.removeItem("entryurl")
     
 

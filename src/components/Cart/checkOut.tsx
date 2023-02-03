@@ -1,4 +1,4 @@
-import { message } from "antd";
+import { message, Space } from "antd";
 import axios from "axios";
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,13 +9,15 @@ import { ContractAddress } from "../contractsAssets/contractsAddress";
 // import { any } from "prop-types";
 // import { Transaction } from "ethereumjs-tx";
 
-const Checkout = ({ products }: any) => {
+const Checkout = () => {
   document.title = "KeyStone | Checkout";
   const navigate = useNavigate();
   const { ethereum }: any = window;
   const web3 = new Web3(ethereum);
   const GoerliTestnet = 5;
-  console.log("product", products);
+  // console.log("product", products);
+  const [CoinLoading, setCoinLoading] = useState(false);
+  const [TokenLoading, setTokenLoading] = useState(false);
 
   //   console.log(ethereum);
   const [serverAddress, setServerAddress] = useState<any>();
@@ -52,7 +54,13 @@ const Checkout = ({ products }: any) => {
   const checkoutHandler = async (e: FormEvent) => {
     e.preventDefault();
 
-    await getserver();
+    if (CoinLoading) {
+      await sendCoinTransaction();
+      setCoinLoading(false);
+    } else if (TokenLoading) {
+      await sendTransaction();
+      setTokenLoading(false);
+    }
   };
 
   const connectWallet = async () => {
@@ -80,6 +88,7 @@ const Checkout = ({ products }: any) => {
   };
   const switchNetwork = async () => {
     try {
+      
       if (currentChainId !== GoerliTestnet) {
         await ethereum.request({
           method: "wallet_switchEthereumChain",
@@ -100,8 +109,9 @@ const Checkout = ({ products }: any) => {
       .then(async (responce) => {
         console.log(responce.data.serverAddress);
         await setServerAddress(responce.data.serverAddress);
+        return;
         // await sendTransaction(responce.data.serverAddress);
-        await sendCoinTransaction();
+        // await sendCoinTransaction();
       })
       .catch((error) => {
         console.log(error);
@@ -112,9 +122,12 @@ const Checkout = ({ products }: any) => {
       if (!ethereum) {
         alert("please connect to the network");
       } else {
+        await getserver();
         const amount = web3.utils.toHex(
           web3.utils.toWei(String(total / 3650), "ether")
         );
+        console.log(amount);
+        
 
         console.log(amount, serverAddress, currentAddress);
         const transaction = await web3.eth.sendTransaction({
@@ -131,27 +144,31 @@ const Checkout = ({ products }: any) => {
             hash: {
               from: transaction.from,
               to: transaction.to,
-              amount:total/3650,
+              amount: total / 3650,
               hash: transaction.transactionHash,
             },
           })
           .then((result: any) => {
             console.log(result.data);
-          }).catch((error:any)=>{
-            console.log(error)
+            alert(result.data.message);
+            navigate("/u/orders");
           })
+          .catch((error: any) => {
+            console.log(error);
+          });
       }
     } catch (error) {
       console.log(error);
     }
   };
-  const sendTransaction = async (address: any) => {
+  const sendTransaction = async () => {
     try {
-      console.log(address);
+      await getserver();
+      console.log(serverAddress);
 
       const currentAccount = await web3.eth.getAccounts();
       if (!currentAccount) {
-        console.log("canot get account address from metamask");
+        console.log("cannot get account address from metamask");
       }
       const Contract = new web3.eth.Contract(
         ContractABI as [],
@@ -162,7 +179,7 @@ const Checkout = ({ products }: any) => {
       console.log(currentAccount);
 
       await Contract.methods
-        .transfer(address, amount)
+        .transfer(serverAddress, amount)
         .send({ from: currentAccount[0] })
         .then(async (responce: any) => {
           await console.log(responce);
@@ -194,7 +211,7 @@ const Checkout = ({ products }: any) => {
             })
             .then(async (response) => {
               console.log(response);
-              await message.success(response.data.message);
+              await alert(response.data.message);
               navigate("/u/orders");
             })
             .catch((err) => {
@@ -586,13 +603,22 @@ const Checkout = ({ products }: any) => {
                                 </div>
                             </div> */}
               <hr className="mb-4" />
-              <button
-                className="btn btn-primary btn-lg btn-block"
-                // onClick={getserver}
-                type="submit"
-              >
-                Continue to checkout
-              </button>
+              <Space wrap>
+                <button
+                  className="btn btn-primary btn-lg btn-block"
+                  onClick={() => setCoinLoading(true)}
+                  type="submit"
+                >
+                  Continue with coins
+                </button>
+                <button
+                  className="btn btn-primary btn-lg btn-block "
+                  onClick={() => setTokenLoading(true)}
+                  type="submit"
+                >
+                  Continue with Token
+                </button>
+              </Space>
             </form>
           </div>
         </div>
@@ -625,7 +651,7 @@ const Checkout = ({ products }: any) => {
             })}
 
             <li className="list-group-item d-flex justify-content-between">
-              <span>Total (USD)</span>
+              <span>Total (Eth)</span>
               <strong>{total.toFixed(2)}</strong>
             </li>
           </ul>

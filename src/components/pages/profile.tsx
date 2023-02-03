@@ -47,12 +47,9 @@ export const Profile = () => {
         ...data,
         phonenumber: String(data.phonenumber),
       })
-      .then(async(response) => {
-        await message.success({
-          content: response.data.message,
-          style: { marginTop: 60 },
-        });
-         window.location.reload();
+      .then(async (response) => {
+        await alert(response.data.message);
+        window.location.reload();
       })
       .catch((err) => {
         message.error({
@@ -80,11 +77,8 @@ export const Profile = () => {
       .post("/changepassword", { ...newPassword })
       .then((response) => {
         console.log(response);
-        
-        message.success({
-          content: response.data.message,
-          style: { marginTop: 60 },
-        });
+
+        alert(response.data.message);
         setPassChangemode(false);
       })
       .catch((err) => {

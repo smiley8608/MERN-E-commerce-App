@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { addToCart } from "../Cart/card";
 import { setReplaceCart } from "../redux/userSlice";
 import { setCartReplace } from "../redux/cartSlice";
+import { Link } from "react-router-dom";
 
 interface propductprops {
   product: Product;
@@ -15,6 +16,7 @@ interface propductprops {
 export const Card = ({ product }: propductprops): JSX.Element => {
   const auth = useAppSelector((state) => state.User.Auth);
   const cart = useAppSelector((state) => state.User.User?.cart);
+  const [Loading, setLoading] = useState(true);
   const dispatch = useAppDispatch();
   const [disabler, setDisabler] = useState(false);
 
@@ -38,7 +40,7 @@ export const Card = ({ product }: propductprops): JSX.Element => {
         <div className="tw-mb-0 tw-my-1 tw-text-xl tw-text-gray-700 tw-flex tw-items-center">
           Price:{" "}
           <span className="tw-text-sm tw-font-semibold tw-text-pink-600 tw-flex tw-gap-1 tw-items-center">
-           <Statistic value={product.price} /> Tkn
+            <Statistic value={product.price} /> Tkn
           </span>
         </div>
         <Rating
@@ -55,19 +57,25 @@ export const Card = ({ product }: propductprops): JSX.Element => {
           disabled={disabler ? true : false}
           onClick={async () => {
             setDisabler(true);
+            setLoading(false)
+            alert('Added to cart')
             setTimeout(() => {
               setDisabler(false);
             }, 1000);
             console.log("runn");
             let resultCart = await addToCart(product, auth, cart as CartItem[]);
-            console.log(resultCart)
+            console.log(resultCart);
             dispatch(setCartReplace(resultCart as unknown as CartItem[]));
             auth
               ? dispatch(setReplaceCart([]))
               : dispatch(setReplaceCart(resultCart as unknown as CartItem[]));
           }}
         >
-          Add to Cart
+          {Loading ? (
+            <>Add to Cart</>
+          ) : (
+            <Link to={"/cart"}>view to Cart</Link>
+          )}
         </Button>
       </div>
     </div>

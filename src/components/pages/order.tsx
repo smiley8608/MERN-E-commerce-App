@@ -36,8 +36,11 @@ export const Orders = () => {
       .get("/getalltransaction")
       .then((responce) => {
         console.log(responce.data);
-
-        setRows(responce.data.result);
+        if (responce.data.message === undefined) {
+          setRows(responce.data.result);
+        } else {
+          alert(responce.data.message);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -68,37 +71,40 @@ export const Orders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row: any) => (
-              <StyledTableRow key={row._id}>
-                <StyledTableCell component="th" scope="row">
-                  {row.product.map((items: any) => {
-                    return <p key={Math.random()}>{items.product.title}</p>;
-                  })}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row" align="center">
-                  {row.product.map((items: any) => {
-                    return <p key={Math.random()}>{items.quantity}</p>;
-                  })}
-                </StyledTableCell>
-                <StyledTableCell align="center">{row.amount}</StyledTableCell>
-                <StyledTableCell align="right">
-                  <a
-                    href={`https://goerli.etherscan.io/tx/${row.paymentDetails.hash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {SlicedAddress(row.paymentDetails.hash)}
-                  </a>
-                </StyledTableCell>
-                <StyledTableCell align="center">{SlicedAddress(row._id)}</StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.deliverIn}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.deliverStatus}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+            {rows &&
+              rows.map((row: any) => (
+                <StyledTableRow key={row._id}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.product.map((items: any) => {
+                      return <p key={Math.random()}>{items.product.title}</p>;
+                    })}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row" align="center">
+                    {row.product.map((items: any) => {
+                      return <p key={Math.random()}>{items.quantity}</p>;
+                    })}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">{row.amount}</StyledTableCell>
+                  <StyledTableCell align="right">
+                    <a
+                      href={`https://goerli.etherscan.io/tx/${row.paymentDetails.hash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {SlicedAddress(row.paymentDetails.hash)}
+                    </a>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {SlicedAddress(row._id)}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.deliverIn}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.deliverStatus}
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
