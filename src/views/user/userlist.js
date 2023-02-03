@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import axios from 'axios'
-import { RoomRounded } from '@mui/icons-material'
+// import { RoomRounded } from '@mui/icons-material'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,6 +45,9 @@ const UserList = () => {
   }, [])
   // const rows = [...orderList]
   console.log(orderList)
+  const slicedWord = (id) => {
+    return `${id.slice(0, 4)}....${id.slice(id.length - 4)}`
+  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -58,21 +61,21 @@ const UserList = () => {
 
             <TableCell align="right">LastName</TableCell>
             <TableCell align="right">Phone Number</TableCell>
-            <TableCell align="right">UserStatus</TableCell>
+            {/* <TableCell align="right">UserStatus</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
           {orderList.map((row) => (
             <StyledTableRow key={row._id}>
               <StyledTableCell component="th" scope="row">
-                {row._id}
+                {slicedWord(row._id)}
               </StyledTableCell>
               <StyledTableCell align="right">{row.username}</StyledTableCell>
               <StyledTableCell align="right">{row.email}</StyledTableCell>
               <StyledTableCell align="right">{row.firstname}</StyledTableCell>
               <StyledTableCell align="right">{row.lastname}</StyledTableCell>
               <StyledTableCell align="right">{row.phonenumber}</StyledTableCell>
-              <StyledTableCell align="right">{row.phonenumber}</StyledTableCell>
+              {/* <StyledTableCell align="right">{row.phonenumber}</StyledTableCell> */}
             </StyledTableRow>
           ))}
         </TableBody>

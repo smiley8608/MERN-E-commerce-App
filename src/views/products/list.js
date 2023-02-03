@@ -83,7 +83,9 @@ const ListProduct = () => {
     axios
       .post('http://localhost:4000/deleteProduct', { id })
       .then(async (result) => {
-        await message.success(result.data.message)
+        if (result.data.message) {
+          await alert(result.data.message)
+        }
       })
       .catch((error) => {
         console.log(error)

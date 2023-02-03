@@ -5,6 +5,8 @@ import React, { Suspense, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
+// import { LogOut } from './views/pages/logout/logout'
+// import LogOut from './views/pages/logout/logout'
 import EditProducts from './views/products/edit'
 import { setInitialState } from './views/redux/Adminslice'
 
@@ -22,6 +24,7 @@ const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
+// const LogOut = React.lazy(() => import('./views/pages/logout/logout'))
 
 const App = () => {
   const dispatch = useDispatch()

@@ -35,7 +35,7 @@ const Login = () => {
         .then((response) => {
           localStorage.setItem('admin-token', response.data.tkn)
           dispatch(setInitialState({ Admin: response.data.Admin, Auth: response.data.Auth }))
-          message.success(response.data.message)
+          alert(response.data.message)
           navigate('/products')
         })
         .catch((error) => {

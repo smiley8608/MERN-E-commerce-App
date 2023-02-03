@@ -17,6 +17,7 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 import { logo } from 'src/assets/brand/logo'
+// import LogOut from 'src/views/pages/logout/logout'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -54,7 +55,9 @@ const AppHeader = () => {
           )}
           {Auth && (
             <CNavItem>
-              <CNavLink href="#">SignOut</CNavLink>
+              <CNavLink to="/logout" component={NavLink}>
+                SignOut
+              </CNavLink>
             </CNavItem>
           )}
           {!Auth && (

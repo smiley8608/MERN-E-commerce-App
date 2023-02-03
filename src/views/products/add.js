@@ -89,7 +89,7 @@ const AddProducts = () => {
         },
       })
       .then(async (response) => {
-        await message.success(response.data.message)
+        await alert(response.data.message)
       })
       .catch((error) => {
         console.log(error)

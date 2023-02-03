@@ -20,6 +20,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }))
+// useEffect(() => {
+//     axios
+//       .get('http://localhost:4000/admin/orderrefund')
+//       .then((respose) => {
+//         console.log(respose.data.Order)
+//         setRefundList(respose.data.Order)
+//       })
+//       .catch((error) => {
+//         console.log(error)
+//       })
+//   }, [])
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -66,6 +77,10 @@ const OrderList = () => {
       value: 'order-delivared',
       label: 'Order Delivared',
     },
+    {
+      value: 'order-cancelled',
+      label: 'Order-Cancelled',
+    },
   ]
   const silcedAddress = (id) => {
     return `${id.slice(0, 4)}......${id.slice(id.length - 4)}`
@@ -99,7 +114,7 @@ const OrderList = () => {
               </StyledTableCell>
               {row.product.map((items) => {
                 return (
-                  <StyledTableRow key={items._id}>
+                  <StyledTableRow key={items.product._id}>
                     <StyledTableCell align="right">{items.product.title}</StyledTableCell>
                     <StyledTableCell align="right">{items.quantity}</StyledTableCell>
                   </StyledTableRow>

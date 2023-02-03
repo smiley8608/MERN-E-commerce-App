@@ -35,7 +35,9 @@ const EditProducts = () => {
     stock: '',
     brand: '',
     category: '',
+    thumbnail: '',
   })
+  const [selectedFilestwo, setSelectedFilestwo] = useState()
   const [selectedFiles, setSelectedFiles] = useState()
   const [preview, setPreview] = useState()
   const [loading, setloading] = useState(true)
@@ -58,7 +60,7 @@ const EditProducts = () => {
     axios
       .post('http://localhost:4000/getproduct', { id })
       .then((result) => {
-        console.log(result.data)
+        // console.log(result.data)
         setdata(result.data.product)
         // setSelectedFiles(result.data.product.thumbnail)
       })
@@ -76,11 +78,21 @@ const EditProducts = () => {
       // setdata({ ...data, thumbnail: e.target.files[0] })
     }
   }
-  const Submit = (e) => {
+  const Submit = async (e) => {
     const form = new FormData()
     e.preventDefault()
-    console.log('logger', data)
-
+    console.log(data)
+    if (
+      data.brand === '' ||
+      data.category === '' ||
+      data.description === '' ||
+      data.price === '' ||
+      data.rating === '' ||
+      data.stock === '' ||
+      data.title === ''
+    ) {
+      return alert('Please the input !')
+    }
     form.append('_id', data._id)
     form.append('title', data.title)
     form.append('discription', data.description)
@@ -89,7 +101,13 @@ const EditProducts = () => {
     form.append('stock', data.stock)
     form.append('brand', data.brand)
     form.append('catagories', data.category)
-    form.append('productphotos', selectedFiles)
+    // form.append('productphotos', data.thumbnail)
+    if (selectedFiles === undefined) {
+      console.log('runes')
+      form.append('productphotos', data.thumbnail)
+    } else {
+      form.append('productphotos', selectedFiles)
+    }
     axios
       .post('http://localhost:4000/editproduct', form, {
         headers: {
@@ -98,14 +116,14 @@ const EditProducts = () => {
       })
       .then(async (response) => {
         console.log(response.data)
-        await message.success(response.data.message)
+        await alert(response.data.message)
       })
       .catch((error) => {
         console.log(error)
       })
     navigate('/product/productlist')
   }
-  console.log(data.thumbnail)
+  // console.log(data.thumbnail)
   return (
     <div className="flex justify-center items-center">
       <div>

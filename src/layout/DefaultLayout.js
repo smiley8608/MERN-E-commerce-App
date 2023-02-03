@@ -1,4 +1,5 @@
 import React from 'react'
+// import LogOut from 'src/views/pages/logout/logout'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 
 const DefaultLayout = () => {

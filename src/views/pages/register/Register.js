@@ -30,7 +30,7 @@ const Register = () => {
       data.password === '' ||
       data.conformPassword === ''
     ) {
-      return message.success('please enter the input fields')
+      return alert('please enter the input fields')
     } else {
       console.log(data)
       axios
