@@ -5,6 +5,7 @@ import Joi = require('joi')
 import crudModel from '../model/crudmodel'
 import Jwt from 'jsonwebtoken'
 import { updatedRequest } from '../Interface'
+import OrderModel from '../model/orderModel'
 dotenv.config()
 const crudSchema = Joi.object({
     username: Joi.string().min(6).max(13).required(),
@@ -26,7 +27,7 @@ export const formValidation = (req: express.Request, res: express.Response) => {
             crudModel.find({ email: email })
                 .then((response) => {
                     // console.log(response);
-                    
+
                     if (response.length >= 1) {
                         return res.json({ message: 'Account already exists !' })
                     }
@@ -110,25 +111,25 @@ export const loginValidation = (req: express.Request, res: express.Response) => 
         })
 }
 // <----------------------------------------------------------------------------------------------------------------------------------------->
-export const UserStatus = (req:updatedRequest, res: express.Response):any => {
+export const UserStatus = (req: updatedRequest, res: express.Response): any => {
     console.log('aaaaaa');
-    
-    
+
+
     console.log(req.user);
-    
+
     if (!req.user) {
-        
+
         return res.status(403).json({
-            message:'You are not allowed to login please try again later ',
+            message: 'You are not allowed to login please try again later ',
             user: null,
             auth: false,
         })
-    }else{
+    } else {
         console.log(req.user)
         return res.status(200).json({
-            message:'Welcome Back',
-            auth:true,
-            user:req.user
+            message: 'Welcome Back',
+            auth: true,
+            user: req.user
         })
     }
 }
@@ -136,24 +137,24 @@ export const UserStatus = (req:updatedRequest, res: express.Response):any => {
 
 export const changePassword = (req: updatedRequest, res: express.Response) => {
     // console.log(req.body);
-    
+
     const { oldPassword, newPassword, confNewPassword } = req.body
 
     if (newPassword !== confNewPassword) {
         return res.json({ message: "Passwords didn't match" })
     }
-    
+
     crudModel.findById(req.user._id)
-    .then(userFindResponse => {
-        bcrypt.compare(newPassword, userFindResponse?.password as string)
-        .then(prevpassuseCheck => {
-            if (prevpassuseCheck) {
-                console.log('prevpassuseCheck');
-                
-                return res.json({ message: "Your old password cannot be your new password" })
-            }
-            bcrypt.compare(oldPassword, userFindResponse?.password as string)
-            .then(passCompare => {
+        .then(userFindResponse => {
+            bcrypt.compare(newPassword, userFindResponse?.password as string)
+                .then(prevpassuseCheck => {
+                    if (prevpassuseCheck) {
+                        console.log('prevpassuseCheck');
+
+                        return res.json({ message: "Your old password cannot be your new password" })
+                    }
+                    bcrypt.compare(oldPassword, userFindResponse?.password as string)
+                        .then(passCompare => {
                             // console.log('runner');
                             if (passCompare === false) {
                                 return res.json({ message: "Your previous password is incorrect !!!" })
@@ -193,24 +194,37 @@ const UpdateSchema = Joi.object({
     // email: Joi.string().email().required(),
     phonenumber: Joi.number().required()
 }).with('email', 'password')
-export const UpdateUser=async(req:updatedRequest,res:express.Response)=>{
+export const UpdateUser = async (req: updatedRequest, res: express.Response) => {
     // console.log(req.body);
-    
-    const {username,lname,fname,email,phonenumber}=req.body
+
+    const { username, lname, fname, email, phonenumber } = req.body
     // console.log(username,lname,fname,email,phonenumber);
 
     try {
-       await UpdateSchema.validateAsync({username:username,firstname:fname,lastname:lname,phonenumber:phonenumber})
-     const userupdate= await crudModel.updateOne({_id:req.user._id},{username:username,firstname:fname,lastname:lname,email:email,phonenumber:phonenumber})
-     if(!userupdate){
-        return res.json({message:'something wents wrong!'})
-     }else{
-        return res.json({message:'Account updated successfully!',Result:userupdate})
-     }
-         
+        await UpdateSchema.validateAsync({ username: username, firstname: fname, lastname: lname, phonenumber: phonenumber })
+        const userupdate = await crudModel.updateOne({ _id: req.user._id }, { username: username, firstname: fname, lastname: lname, email: email, phonenumber: phonenumber })
+        if (!userupdate) {
+            return res.json({ message: 'something wents wrong!' })
+        } else {
+            return res.json({ message: 'Account updated successfully!', Result: userupdate })
+        }
+
     } catch (error) {
         console.log(error);
-        
+
     }
-    
+
+}
+
+export const cancelOrder = (req: express.Request, res: express.Response) => {
+    console.log(req.body);
+    const { id } = req.body
+    OrderModel.findByIdAndUpdate({ _id: id }, { deliverStatus: 'order-cancelled' })
+        .then((responce) => {
+            return res.json({ message: 'Order Cancelled !' })
+        }).catch(error => {
+            console.log(error);
+
+        })
+
 }

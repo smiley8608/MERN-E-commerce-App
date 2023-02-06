@@ -150,15 +150,25 @@ export const RefundStatus = (req: express.Request, res: express.Response) => {
     OrderModel.aggregate([{ $lookup: { from: 'models', localField: 'user', foreignField: '_id', as: 'user_id' } }, { $unwind: '$user_id' }, { $match: { deliverStatus: 'order-cancelled' } }])
         .then(order => {
             if (order.length < 1) {
-                return res.json({ message: 'no refund Orders available' })
+                return res.json({ message: 'no refund Orders available',Order:[] })
             } else {
                 return res.json({ Order: order })
             }
         })
 }
 
-export const RefundStatusUpdate=(req:express.Request,res:express.Response)=>{
+export const RefundStatusUpdate = (req: express.Request, res: express.Response) => {
     console.log(req.body);
-    const {}=req.body
-    
+    const { id, amount, hash } = req.body
+    OrderModel.findByIdAndUpdate({ _id: id }, { amount: amount, paymentDetails: hash, deliverStatus: 'refunded' })
+        .then(responce => {
+            if (responce) {
+                return res.json({ message: 'Refunded successfully' })
+            }
+
+        }).catch(error => {
+            console.log(error);
+
+        })
+
 }

@@ -15,4 +15,5 @@ router.post('/cart',middleWere,cart.cartChanger)
 router.get('/authstatus',middleWere,crudRouter.UserStatus)
 router.post('/deletecart',middleWere,cart.cartdeleter)
 router.post('/changepassword',middleWere,crudRouter.changePassword)
+router.post('/cancelorder',middleWere,crudRouter.cancelOrder)
 export default router
