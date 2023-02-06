@@ -108,10 +108,8 @@ const Checkout = () => {
       .get("/getserverAddress")
       .then(async (responce) => {
         console.log(responce.data.serverAddress);
-        await setServerAddress(responce.data.serverAddress);
-        return;
-        // await sendTransaction(responce.data.serverAddress);
-        // await sendCoinTransaction();
+         setServerAddress(responce.data.serverAddress);
+        
       })
       .catch((error) => {
         console.log(error);

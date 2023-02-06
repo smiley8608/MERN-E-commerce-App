@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
+import { Button } from "antd";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,6 +52,18 @@ export const Orders = () => {
   const SlicedAddress = (id: [any]) => {
     return `${id.slice(0, 5)}....${id.slice(id.length - 4)}`;
   };
+  const ClickHandler = (id: any) => {
+    console.log(id);
+
+    axios
+      .post("http://localhost:4000/cancelorder", { id: id })
+      .then((result) => {
+        console.log(result.data.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div>
@@ -68,6 +81,7 @@ export const Orders = () => {
               <StyledTableCell align="center">OrderID</StyledTableCell>
               <StyledTableCell align="right">Delivary IN</StyledTableCell>
               <StyledTableCell align="right">Delivary STATUS</StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -103,6 +117,14 @@ export const Orders = () => {
                   <StyledTableCell align="center">
                     {row.deliverStatus}
                   </StyledTableCell>
+                  {
+                    row.deliverStatus==='order-cancelled'||row.deliverStatus==='order-delivared'||row.deliverStatus==='refunded'? "":<StyledTableCell align="center">
+                    <Button onClick={() => ClickHandler(row._id)}>
+                      Cancel-Order
+                    </Button>
+                  </StyledTableCell>
+                  }
+                  
                 </StyledTableRow>
               ))}
           </TableBody>
