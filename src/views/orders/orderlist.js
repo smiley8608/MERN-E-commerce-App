@@ -131,35 +131,44 @@ const OrderList = () => {
                 </a>
               </StyledTableCell>
               <StyledTableCell align="right">{row.deliverIn}</StyledTableCell>
+              <StyledTableCell align="right">{row.deliverStatus}</StyledTableCell>
               <StyledTableCell align="right">
-                {' '}
-                <TextField
-                  id="outlined-select-status"
-                  select
-                  // type={'submit'}
-                  label="order-status"
-                  value={data}
-                  defaultValue="order-placed"
-                  onChange={(e) => {
-                    axios
-                      .post('http://localhost:4000/admin/orderstatus', {
-                        _id: row._id,
-                        delivaryStatus: e.target.value,
-                      })
-                      .then((response) => {
-                        console.log(response.data)
-                      })
-                      .catch((error) => {
-                        console.log(error)
-                      })
-                  }}
-                >
-                  {orderStatus.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                {row.deliverStatus === 'order-cancelled' ||
+                row.deliverStatus === 'order-delivared' ||
+                row.deliverStatus === 'refunded' ? (
+                  ''
+                ) : (
+                  <TextField
+                    id="outlined-select-status"
+                    select
+                    // type={'submit'}
+                    label="order-status"
+                    value={row.deliverStatus}
+                    defaultValue="order-placed"
+                    onChange={(e) => {
+                      axios
+                        .post('http://localhost:4000/admin/orderstatus', {
+                          _id: row._id,
+                          delivaryStatus: e.target.value,
+                        })
+                        .then((response) => {
+                          if (response.data.message) {
+                            alert(response.data.message)
+                          }
+                          window.location.reload()
+                        })
+                        .catch((error) => {
+                          console.log(error)
+                        })
+                    }}
+                  >
+                    {orderStatus.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
               </StyledTableCell>
             </StyledTableRow>
           ))}

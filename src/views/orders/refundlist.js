@@ -10,10 +10,11 @@ import Paper from '@mui/material/Paper'
 import axios from 'axios'
 import { RoomRounded } from '@mui/icons-material'
 import { MenuItem, TextField } from '@mui/material'
-import { Button } from 'antd'
+import { Button, message, Space } from 'antd'
 import Web3 from 'web3'
 import ContractABI from '../contract/contractABI.json'
 import { ContractAddress } from '../contract/contractAddress'
+import { useNavigate } from 'react-router-dom'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,6 +40,8 @@ const OrderList = () => {
   const [refundlist, setRefundList] = useState([])
   const [data, setData] = useState([])
   const [currentAddress, setCurrentAddress] = useState()
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   const { ethereum } = window
   const GoerliTestnet = 5
@@ -49,13 +52,17 @@ const OrderList = () => {
       .then((respose) => {
         console.log(respose.data.Order)
         setRefundList(respose.data.Order)
+        if (respose.data.message) {
+          alert(respose.data.message)
+          navigate('/')
+        }
       })
       .catch((error) => {
         console.log(error)
       })
   }, [])
   // const rows = [...orderList]
-  console.log(refundlist)
+  console.log(refundlist.length)
   const ClickHandler = async (to, amount, id) => {
     if (amount >= 1) {
       await sendTokenTransaction(to, amount, id)
@@ -65,7 +72,9 @@ const OrderList = () => {
   }
 
   const connectWallet = async () => {
+    setLoading(true)
     if (!ethereum) {
+      setLoading(false)
       return alert('please connect to the wallet')
     } else {
       const account = await ethereum.request({
@@ -111,7 +120,12 @@ const OrderList = () => {
         .post('http://localhost:4000/admin/refundstatus', {
           id: id,
           amount: amount,
-          hash: { to: transaction.to, from: transaction.from, hash: transaction.transactionHash },
+          hash: {
+            to: transaction.to,
+            from: transaction.from,
+            hash: transaction.transactionHash,
+            amount: amount,
+          },
         })
         .then((result) => {
           console.log(result.data.message)
@@ -145,13 +159,18 @@ const OrderList = () => {
               id: id,
               amount: amount,
               hash: {
-                to: responce.events.Transfer.returnValues.to,
                 from: responce.events.Transfer.returnValues.from,
+                to: responce.events.Transfer.returnValues.to,
                 hash: responce.transactionHash,
+                amount: responce.events.Transfer.returnValues.value,
               },
             })
             .then((result) => {
-              console.log(result.data.message)
+              if (result.data.message) {
+                alert(result.data.message)
+              } else {
+                navigate('/')
+              }
             })
             .catch((error) => {
               console.log(error)
@@ -167,61 +186,72 @@ const OrderList = () => {
     return `${id.slice(0, 4)}......${id.slice(id.length - 4)}`
   }
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <TableCell>OrderId</TableCell>
-            <TableCell align="right">Email</TableCell>
-            <TableCell align="right">Address</TableCell>
-            <TableCell align="right">Products</TableCell>
+    <div>
+      {refundlist.length >= 1 && (
+        <Space direction="vertical">
+          <div className="">
+            {loading ? <> </> : <Button onClick={connectWallet}>connectWallet</Button>}
+          </div>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>OrderId</TableCell>
+                  <TableCell align="right">Email</TableCell>
+                  <TableCell align="right">Address</TableCell>
+                  <TableCell align="right">Products</TableCell>
 
-            <TableCell align="right">Amount</TableCell>
-            <TableCell align="right">Hash</TableCell>
-            <TableCell align="right">DeliverIn</TableCell>
-            <TableCell align="right">DeliverStatus</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {refundlist.map((row) => (
-            <StyledTableRow key={row._id}>
-              <StyledTableCell component="th" scope="row">
-                {silcedAddress(row._id)}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.user_id.email}</StyledTableCell>
-              <StyledTableCell align="right">
-                {row.address.buildingNo},{row.address.street},{row.address.city},
-                {row.address.pincode}
-              </StyledTableCell>
-              {row.product.map((items) => {
-                return (
-                  <StyledTableRow key={items.product._id}>
-                    <StyledTableCell align="right">{items.product.title}</StyledTableCell>
-                    <StyledTableCell align="right">{items.quantity}</StyledTableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Hash</TableCell>
+                  <TableCell align="right">DeliverIn</TableCell>
+                  <TableCell align="right">DeliverStatus</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {refundlist.map((row) => (
+                  <StyledTableRow key={row._id}>
+                    <StyledTableCell component="th" scope="row">
+                      {silcedAddress(row._id)}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{row.user_id.email}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.address.buildingNo},{row.address.street},{row.address.city},
+                      {row.address.pincode}
+                    </StyledTableCell>
+                    {row.product.map((items) => {
+                      return (
+                        <StyledTableRow key={items.product._id}>
+                          <StyledTableCell align="right">{items.product.title}</StyledTableCell>
+                          <StyledTableCell align="right">{items.quantity}</StyledTableCell>
+                        </StyledTableRow>
+                      )
+                    })}
+                    <StyledTableCell align="right">{row.amount}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      <a
+                        href={`https://goerli.etherscan.io/tx/${row.paymentDetails.hash}`}
+                        target={'_blank'}
+                        rel="noreferrer"
+                      >
+                        {silcedAddress(row.paymentDetails.hash)}
+                      </a>
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{row.deliverStatus}</StyledTableCell>
+                    <StyledTableCell>
+                      <Button
+                        onClick={() => ClickHandler(row.paymentDetails.from, row.amount, row._id)}
+                      >
+                        Refund
+                      </Button>
+                    </StyledTableCell>
                   </StyledTableRow>
-                )
-              })}
-              <StyledTableCell align="right">{row.amount}</StyledTableCell>
-              <StyledTableCell align="right">
-                <a
-                  href={`https://goerli.etherscan.io/tx/${row.paymentDetails.hash}`}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  {silcedAddress(row.paymentDetails.hash)}
-                </a>
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.deliverStatus}</StyledTableCell>
-              <StyledTableCell>
-                <Button onClick={() => ClickHandler(row.paymentDetails.from, row.amount, row._id)}>
-                  Refund
-                </Button>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Space>
+      )}
+    </div>
   )
 }
 export default OrderList
